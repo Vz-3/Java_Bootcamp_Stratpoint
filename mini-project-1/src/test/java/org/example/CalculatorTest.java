@@ -51,7 +51,7 @@ class CalculatorTest {
 
     @Test
     void testCalculateExponent() {
-        Assertions.assertEquals(32, calculatorHelper("2^5"));
+        Assertions.assertEquals(390625, calculatorHelper("5^2^3"));
     }
 
     @Test
