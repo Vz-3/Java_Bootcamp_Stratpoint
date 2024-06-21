@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import static java.lang.Double.NaN;
@@ -183,6 +184,10 @@ public class CalculatorV2 extends Calculator {
             else if (checkAtomType(token.charAt(0)) == atomType.RIGHT_PARENTHESIS) {
                 while (!operatorStack.isEmpty() && operatorStack.peek() != '(' ) {
                     outputQueue.add(String.valueOf(operatorStack.pop()));
+                }
+                if (operatorStack.isEmpty()) {
+                    reportError(errorType, " parenthesis mismatch!");
+                    return false;
                 }
                 // Asserts that ( exists
                 operatorStack.pop(); // flush the left parenthesis into the void.

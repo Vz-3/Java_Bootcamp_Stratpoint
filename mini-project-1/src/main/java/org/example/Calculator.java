@@ -107,7 +107,7 @@ public class Calculator {
 
             if (previousType == currentType) {
                 if (currentType == atomType.OPERATOR || currentType == atomType.DOT || token == 'n') {
-                    reportError(errorType, "Redundant symbol.");
+                    reportError(errorType, "redundant symbol.");
                     return false;
                 } else
                     valueToBeAppended.append(token);
@@ -127,6 +127,10 @@ public class Calculator {
                     Given that the expression can't start with an operator or dot, the change of type into operator
                     indicates that a number/negative existed before it, ergo append the value.
                     */
+                    if (expr[i-1] == 'n') {
+                        reportError(errorType, "invalid use of unary operator '-'");
+                        return false;
+                    }
                     values.add(Double.parseDouble(String.valueOf(valueToBeAppended)));
                     // dot & negative flag are set to false again
                     dotIsUsed = false;
