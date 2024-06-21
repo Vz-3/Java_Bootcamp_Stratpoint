@@ -7,6 +7,8 @@ public class Calculator {
     protected String appName = "My Calculator App";
     protected String closeKeyword = "quit";
     protected String expression = "";
+    String answer = "";
+
     private final ArrayList<Double> values = new ArrayList<>();
     private final ArrayList<Character> operations = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class Calculator {
         if (!expression.isEmpty()) {
             if (checkExpression())
                 if (tokenizeExpression())
-                    System.out.println("= "+evaluateExpression());
+                    setAnswer(String.valueOf(evaluateExpression()));
             reset();
         }
     }
@@ -229,17 +231,9 @@ public class Calculator {
         this.expression = newExpression;
     }
 
-    void reset() {
-        expression = "";
-        closeKeyword = "quit";
-        values.clear();
-        operations.clear();
-    }
+    public String getAnswer() {return answer;}
 
-    public String getAppName() {
-        return appName;
-    }
-
+    protected void setAnswer(String newAnswer) {this.answer = newAnswer; }
     // Misc.
     void initializeHashMap() {
         numberMap.put('0', null);
@@ -262,5 +256,17 @@ public class Calculator {
 //        symbolMap.put('(', null);
 //        symbolMap.put(')', null);
     }
+
+    void reset() {
+        expression = "";
+        closeKeyword = "quit";
+        values.clear();
+        operations.clear();
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
 }
 

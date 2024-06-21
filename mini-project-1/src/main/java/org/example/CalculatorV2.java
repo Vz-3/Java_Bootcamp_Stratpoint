@@ -27,7 +27,7 @@ public class CalculatorV2 extends Calculator {
             if (checkExpression())
                 if (tokenizeExpression())
                     if (shuntingYard())
-                        System.out.println("= "+evaluateExpression());
+                       setAnswer(String.valueOf(evaluateExpression()));
             reset();
         }
     }
