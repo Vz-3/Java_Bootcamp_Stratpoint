@@ -163,11 +163,22 @@ public class CalculatorV2 extends Calculator {
                 previousType = currentType;
             }
         }
-        if (previousType == atomType.NUMBER) {
+        if (previousType == atomType.OPERATOR) {
+            reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
+            return false;
+        }
+        else if (previousType == atomType.NUMBER) {
             addToken(valueToBeAppended);
         }
+
+        // Handle addition of unary operator
+//        for (String token: tokens) {
+//            if (token.length() == 1) {
+//                //an operator
+//            }
+//        }
         // Debugging
-        // System.out.println("Tokens: "+tokens);
+        // System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
         return true;
     }
 
@@ -175,6 +186,11 @@ public class CalculatorV2 extends Calculator {
         Stack<Character> operatorStack = new Stack<>();
         ArrayList<String> outputQueue = new ArrayList<>();
         String errorType = "Shunting Yard Algorithm";
+
+        if (tokens.size() == 1) {
+            setRPN(tokens);
+            return true;
+        }
 
         for (String token : tokens) {
             if (checkIfNumber(token))
@@ -227,8 +243,12 @@ public class CalculatorV2 extends Calculator {
         int ctr = 0;
         int ctrLimit = 10000;
 
-        while (!reversePolishNotation.isEmpty() || ctrLimit < ctr) {
-            String element = reversePolishNotation.get(0);
+        if (getRPN().size() == 1) {
+            return Double.parseDouble(getRPN().get(0));
+        }
+
+        while (!getRPN().isEmpty() || ctrLimit < ctr) {
+            String element = getRPN().get(0);
 
             if (checkIfNumber(element)) {
                 rpnStack.push(element);
@@ -245,7 +265,7 @@ public class CalculatorV2 extends Calculator {
                 };
                 rpnStack.push(answer.toString());
             }
-            reversePolishNotation.remove(0);
+            getRPN().remove(0);
             ctr++;
         }
         return Double.parseDouble(rpnStack.pop());
