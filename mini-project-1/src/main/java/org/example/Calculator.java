@@ -79,6 +79,7 @@ public class Calculator {
     private boolean tokenizeExpression() {
         // Tokenize the expression into atoms and assess the logic (EMDAS and semantics ).
         boolean dotIsUsed = false; // resets whenever the tokenizer encounters a symbol.
+        boolean negativeIsUsed = false;
         atomType currentType;
         StringBuilder valueToBeAppended = new StringBuilder();
         String errorType = "Parser";
@@ -94,28 +95,43 @@ public class Calculator {
             valueToBeAppended.append(expr[0]);
             if (previousType == atomType.DOT)
                 dotIsUsed = true;
+            else if (previousType == atomType.NUMBER && expr[0] == 'n') {
+                negativeIsUsed = true;
+                valueToBeAppended.replace(0,1,"-");
+            }
         }
 
         for (int i = 1; i<expression.length();i++) {
-            currentType = checkAtomType(expr[i]);
+            char token = expr[i];
+            currentType = checkAtomType(token);
 
-            // This is only accessible if the previous type is a number, which it should always be.
             if (previousType == currentType) {
-                if (currentType == atomType.OPERATOR || currentType == atomType.DOT) {
+                if (currentType == atomType.OPERATOR || currentType == atomType.DOT || token == 'n') {
                     reportError(errorType, "Redundant symbol.");
                     return false;
                 } else
-                    valueToBeAppended.append(expr[i]);
+                    valueToBeAppended.append(token);
             } else {
-                if (currentType == atomType.OPERATOR) {
+                if (token == 'n') {
+                    if (negativeIsUsed ||  dotIsUsed || previousType == atomType.NUMBER) {
+                        reportError(errorType, " Redundant / Invalid use of unary operator");
+                        return false;
+                    }
+                    if (previousType == atomType.OPERATOR)
+                        valueToBeAppended.setLength(0);
+                    negativeIsUsed = true;
+                    valueToBeAppended.append('-');
+                }
+                else if (currentType == atomType.OPERATOR) {
                     /*
                     Given that the expression can't start with an operator or dot, the change of type into operator
-                    indicates that a number existed before it, ergo append the value.
+                    indicates that a number/negative existed before it, ergo append the value.
                     */
                     values.add(Double.parseDouble(String.valueOf(valueToBeAppended)));
-                    // dotIsUsed is set to false again
+                    // dot & negative flag are set to false again
                     dotIsUsed = false;
-                    operations.add(expr[i]);
+                    negativeIsUsed = false;
+                    operations.add(token);
                 } else if (currentType == atomType.DOT) {
                     if (dotIsUsed && previousType == atomType.NUMBER) {
                         reportError(errorType, "Invalid use of '.' symbol.");
@@ -127,27 +143,26 @@ public class Calculator {
                     // Reset so that a new value will be appended.
                     if (previousType == atomType.OPERATOR) {
                         valueToBeAppended.setLength(0);
-                        valueToBeAppended.append(expr[i]);
+                        valueToBeAppended.append(token);
                     }
                     else
-                        valueToBeAppended.append(expr[i]);
+                        valueToBeAppended.append(token);
                 }
                 previousType = currentType;
             }
         }
 
         // if last atom is an operator, else append the value.
-        if (previousType == atomType.OPERATOR) {
+        if (previousType == atomType.OPERATOR || expr[expression.length()-1] == 'n') {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
-        else {
+        else
             values.add(Double.parseDouble(String.valueOf(valueToBeAppended)));
-        }
 
         // debugging
-//        System.out.println("Values "+values);
-//        System.out.println("Operators "+operations);
+        // System.out.println("Values: "+values);
+        // System.out.println("Operations: "+operations);
 
         return true;
     }
@@ -232,6 +247,7 @@ public class Calculator {
     protected void setAnswer(String newAnswer) {this.answer = newAnswer; }
     // Misc.
     void initializeHashMap() {
+        numberMap.put('n', null); // will serve as the character for the replacement of unary operator '-', might add option to assign what symbol in the future.
         numberMap.put('0', null);
         numberMap.put('1', null);
         numberMap.put('2', null);
@@ -249,8 +265,6 @@ public class Calculator {
         symbolMap.put('*', null);
         symbolMap.put('/', null);
         symbolMap.put('^', null);
-//        symbolMap.put('(', null);
-//        symbolMap.put(')', null);
     }
 
     void reset() {

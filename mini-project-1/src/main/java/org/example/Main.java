@@ -77,7 +77,7 @@ public class Main {
                 // Welcome Text Here
                 if (!firstRun) {
                     System.out.println("Welcome to "+calculator.getAppName());
-                    System.out.println("To exit, use the keyword '"+calculator.getCloseKeyword()+"'.");
+                    System.out.println("To exit, use the keyword '"+calculator.getCloseKeyword()+"'.\n 'n' is reserved for negative values, e.g. n100 = -100.0");
                     firstRun = true;
                 }
 

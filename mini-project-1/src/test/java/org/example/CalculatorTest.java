@@ -65,9 +65,20 @@ class CalculatorTest {
     }
 
     @Test
+    void testCalculateNegativeUnary() {
+        Assertions.assertEquals(-100, calculatorHelper("n100"));
+    }
+
+    @Test
+    void testCalculateNegativeUnary2() {
+        Assertions.assertEquals(6.25, calculatorHelper("n10/n4+3.5-n.25"));
+    }
+
+    @Test
     void testCalculateNaN() {
         Assertions.assertEquals(Double.NaN, calculatorHelper("10+2*0/0"));
     }
+
     @Test
     void testCalculateV2MultipleExpression() {
         double delta = 0.0001; // for tolerance
