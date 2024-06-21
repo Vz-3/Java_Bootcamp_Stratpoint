@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.Objects;
 import java.util.Stack;
 
 import static java.lang.Double.NaN;
@@ -105,6 +106,11 @@ public class CalculatorV2 extends Calculator {
                     Given that the expression can't start with an operator or dot, the change of type into operator
                     indicates that a number existed before it, ergo append the value.
                     */
+                    if (previousType == atomType.DOT) {
+                        reportError(errorType, "invalid use of '.'");
+                        return false;
+                    }
+
                     if (previousType == atomType.LEFT_PARENTHESIS) {
                         reportError(errorType, "missing expression before "+expr[i]);
                         return false;
@@ -115,6 +121,8 @@ public class CalculatorV2 extends Calculator {
                     // dotIsUsed is set to false again
                     dotIsUsed = false;
                     addToken(expr[i]);
+
+                    valueToBeAppended.setLength(0);
                 }
                 else if (currentType == atomType.LEFT_PARENTHESIS) {
                     if (previousType == atomType.NUMBER || previousType == atomType.DOT) {
@@ -163,11 +171,16 @@ public class CalculatorV2 extends Calculator {
                 previousType = currentType;
             }
         }
+
         if (previousType == atomType.OPERATOR) {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
-        else if (previousType == atomType.NUMBER) {
+        else {
+            if (Objects.equals(String.valueOf(valueToBeAppended), ".")) {
+                reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
+                return false;
+            }
             addToken(valueToBeAppended);
         }
 

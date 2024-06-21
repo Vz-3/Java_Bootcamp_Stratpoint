@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Calculator {
     protected String appName = "My Calculator App";
@@ -127,6 +128,10 @@ public class Calculator {
                     Given that the expression can't start with an operator or dot, the change of type into operator
                     indicates that a number/negative existed before it, ergo append the value.
                     */
+                    if (previousType == atomType.DOT) {
+                        reportError(errorType, "invalid use of '.'");
+                        return false;
+                    }
                     if (expr[i-1] == 'n') {
                         reportError(errorType, "invalid use of unary operator '-'");
                         return false;
@@ -136,6 +141,8 @@ public class Calculator {
                     dotIsUsed = false;
                     negativeIsUsed = false;
                     operations.add(token);
+
+                    valueToBeAppended.setLength(0);
                 } else if (currentType == atomType.DOT) {
                     if (dotIsUsed && previousType == atomType.NUMBER) {
                         reportError(errorType, "Invalid use of '.' symbol.");
@@ -144,13 +151,7 @@ public class Calculator {
                     valueToBeAppended.append('.');
                     dotIsUsed = true;
                 } else {
-                    // Reset so that a new value will be appended.
-                    if (previousType == atomType.OPERATOR) {
-                        valueToBeAppended.setLength(0);
-                        valueToBeAppended.append(token);
-                    }
-                    else
-                        valueToBeAppended.append(token);
+                    valueToBeAppended.append(token);
                 }
                 previousType = currentType;
             }
@@ -161,12 +162,17 @@ public class Calculator {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
-        else
+        else {
+            if (Objects.equals(String.valueOf(valueToBeAppended), ".")) {
+                reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
+                return false;
+            }
             values.add(Double.parseDouble(String.valueOf(valueToBeAppended)));
+        }
 
         // debugging
-        // System.out.println("Values: "+values);
-        // System.out.println("Operations: "+operations);
+        System.out.println("Values: "+values);
+        System.out.println("Operations: "+operations);
 
         return true;
     }
