@@ -50,6 +50,14 @@ public class CalculatorV2 extends Calculator {
             return -1;
     }
 
+    private void addToken(Character token) {
+        this.tokens.add(String.valueOf(token));
+    }
+
+    private void addToken(StringBuilder token) {
+        this.tokens.add(String.valueOf(token));
+    }
+
     private boolean tokenizeExpression() {
         // Tokenize the expression into atoms and assess the logic.
         boolean dotIsUsed = false; // resets whenever the tokenizer encounters an operator.
@@ -68,7 +76,7 @@ public class CalculatorV2 extends Calculator {
             reportError(errorType, " mismatched parenthesis.");
         }
         else if (previousType == atomType.LEFT_PARENTHESIS) {
-            tokens.add(String.valueOf(expr[0]));
+            addToken(expr[0]);
         }
         else {
             valueToBeAppended.append(expr[0]);
@@ -86,7 +94,7 @@ public class CalculatorV2 extends Calculator {
                     return false;
                 }
                 else if (currentType == atomType.LEFT_PARENTHESIS || currentType == atomType.RIGHT_PARENTHESIS)
-                    tokens.add(String.valueOf(expr[i]));
+                    addToken(expr[i]);
                 else
                     valueToBeAppended.append(expr[i]); // Only number at this point.
             }
@@ -101,11 +109,11 @@ public class CalculatorV2 extends Calculator {
                         return false;
                     }
                     if (previousType == atomType.NUMBER)
-                        tokens.add(String.valueOf(valueToBeAppended));
+                        addToken(valueToBeAppended);
 
                     // dotIsUsed is set to false again
                     dotIsUsed = false;
-                    tokens.add(String.valueOf(expr[i]));
+                    addToken(expr[i]);
                 }
                 else if (currentType == atomType.LEFT_PARENTHESIS) {
                     if (previousType == atomType.NUMBER || previousType == atomType.DOT) {
@@ -116,15 +124,15 @@ public class CalculatorV2 extends Calculator {
                         reportError(errorType, "missing operator before "+expr[i]);
                         return false;
                     }
-                    tokens.add(String.valueOf(expr[i]));
+                    addToken(expr[i]);
                 }
                 else if (currentType == atomType.RIGHT_PARENTHESIS) {
                     if (previousType == atomType.OPERATOR || previousType == atomType.LEFT_PARENTHESIS || previousType == atomType.DOT) {
                         reportError(errorType, "missing expression before "+expr[i]);
                         return false;
                     }
-                    tokens.add(String.valueOf(valueToBeAppended));
-                    tokens.add(String.valueOf(expr[i]));
+                    addToken(valueToBeAppended);
+                    addToken(expr[i]);
                 }
                 else if (currentType == atomType.DOT) {
                     if (dotIsUsed && previousType == atomType.NUMBER) {
@@ -155,7 +163,7 @@ public class CalculatorV2 extends Calculator {
             }
         }
         if (previousType == atomType.NUMBER) {
-            tokens.add(String.valueOf(valueToBeAppended));
+            addToken(valueToBeAppended);
         }
         // Debugging
         // System.out.println("Tokens: "+tokens);

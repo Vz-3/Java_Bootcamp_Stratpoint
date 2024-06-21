@@ -159,52 +159,48 @@ public class Calculator {
             return values.get(0);
         }
         else if (operations.contains('^')) {
-            int ctr = 0;
-            while (operations.contains('^') || ctr > ctrLimit) {
-                int operationIndex = operations.indexOf('^');
+            int operationIndex = operations.lastIndexOf('^'); // always find the first instance
 
-                // Calculate answer and update values and operations.
-                double answer = Math.pow(values.get(operationIndex), values.get(operationIndex+1));
-                values.set(operationIndex, answer);
-                values.remove(operationIndex+1);
+            double answer = Math.pow(values.get(operationIndex), values.get(operationIndex+1)); // Right to left associativity!
+            values.set(operationIndex, answer);
+            values.remove(operationIndex+1);
 
-                operations.remove(operationIndex);
-
-                ctr++;
-            }
+            operations.remove(operationIndex);
         }
+        // left associativity for the rest...
         else if (operations.contains('*') || operations.contains('/')) {
-            for (int i=0, k=operations.size(); i<k;i++) {
-                boolean flag = false;
-                double answer = 0;
-                if (operations.get(i)=='*') {
-                    flag = true;
-                    answer = values.get(i) * values.get(i+1);
-                }
-                else if (operations.get(i)=='/'){
-                    flag = true;
-                    answer = values.get(i) / values.get(i+1);
-                }
+            double answer = 0;
+            int multiplyIndex = operations.indexOf('*');
+            int divisionIndex = operations.indexOf('/');
+            int index = -1;
 
-                if (flag) {
-                    values.set(i, answer);
-                    values.remove(i+1);
-
-                    operations.remove(i);
-                    k--;
-                }
+            if (multiplyIndex != -1 && divisionIndex != -1) {
+                answer = multiplyIndex < divisionIndex ? values.get(multiplyIndex) * values.get(multiplyIndex+1) : values.get(divisionIndex) / values.get(divisionIndex+1);
+                index = Math.min(multiplyIndex, divisionIndex);
             }
+            else if (multiplyIndex == -1) {
+                answer = values.get(divisionIndex) / values.get(divisionIndex + 1);
+                index = divisionIndex;
+            }
+            else {
+                answer = values.get(multiplyIndex) * values.get(multiplyIndex + 1);
+                index = multiplyIndex;
+            }
+
+            if (index == -1) {
+                throw new RuntimeException("invalid index!");
+            }
+
+            values.set(index, answer);
+            values.remove(index+1);
+            operations.remove(index);
         }
         else {
-            int ctr1 = 0;
-            while (!operations.isEmpty() || ctr1 > ctrLimit) {
-                double answer = operations.get(0)=='+' ? values.get(0) + values.get(1) : values.get(0) - values.get(1);
-                values.set(0, answer);
-                values.remove(1);
+            double answer = operations.get(0)=='+' ? values.get(0) + values.get(1) : values.get(0) - values.get(1);
+            values.set(0, answer);
+            values.remove(1);
 
-                operations.remove(0);
-                ctr1++;
-            }
+            operations.remove(0);
         }
         return evaluateExpression();
     }
