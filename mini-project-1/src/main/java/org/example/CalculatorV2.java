@@ -7,6 +7,28 @@ import java.util.Stack;
 
 import static java.lang.Double.NaN;
 
+/**
+ * Improvement of the CLI calculator class.
+ *
+ * <p> Extension of class {@code Calculator} which uses the
+ * stunting yard algorithm of Dijkstra for rearranging the tokens in
+ * Reverse Polish Notation (RPN) which would simplify the computation process.</p>
+ *
+ * <p> Besides from the examples listed in the {@code Calculator class}, it is now
+ * capable of handling parenthesis. Here is an example:
+ * <blockquote><pre>{@code
+ *     > 95 * 4 - (55.66 / 3 ^ 2 + (47.8))
+ *     = 326.015556}
+ * </pre></blockquote>
+ *
+ * <p> There is one caveat, the {@link #negativeOperator} can't be used before '(',
+ * therefore it is unable to fully function as the original unary operator.
+ * Example:
+ * <blockquote><pre>{@code
+ * > 69 + n(33 - 13^2)
+ * Error type:Parser - missing operator before (}
+ * </pre></blockquote></p>
+ */
 public class CalculatorV2 extends Calculator {
 
     private final ArrayList<String> tokens = new ArrayList<>();
@@ -27,9 +49,12 @@ public class CalculatorV2 extends Calculator {
     public void calculate() {
         if (!expression.isEmpty()) {
             if (checkExpression())
-                if (tokenizeExpression())
+                if (tokenizeExpression()) {
                     if (shuntingYard())
-                       setAnswer(String.valueOf(evaluateExpression()));
+                        setAnswer(String.valueOf(evaluateExpression()));
+                }
+                else
+                        setAnswer(""); // clears answer.
             reset();
         }
     }
@@ -198,7 +223,7 @@ public class CalculatorV2 extends Calculator {
             addToken(valueToBeAppended);
 
         // Debugging
-        System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
+        // System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
         return true;
     }
 
@@ -263,7 +288,7 @@ public class CalculatorV2 extends Calculator {
         int ctr = 0;
         int ctrLimit = 10000;
 
-        System.out.println("Rpn:"+getRPN());
+        // System.out.println("Rpn:"+getRPN());
         if (getRPN().size() == 1) {
             return Double.parseDouble(getRPN().get(0));
         }
