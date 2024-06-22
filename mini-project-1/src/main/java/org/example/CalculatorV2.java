@@ -116,7 +116,7 @@ public class CalculatorV2 extends Calculator {
                         return false;
                     }
                     if (previousType == atomType.NUMBER)
-                        addToken(valueToBeAppended);
+                        addToken(valueToBeAppended); // finally finishes a number and appends it.
 
                     // dotIsUsed is set to false again
                     dotIsUsed = false;
@@ -140,7 +140,7 @@ public class CalculatorV2 extends Calculator {
                         reportError(errorType, "missing expression before "+expr[i]);
                         return false;
                     }
-                    addToken(valueToBeAppended);
+                    addToken(valueToBeAppended); // finally finishes a number and appends it.
                     addToken(expr[i]);
                 }
                 else if (currentType == atomType.DOT) {
@@ -176,13 +176,13 @@ public class CalculatorV2 extends Calculator {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
-        else {
-            if (Objects.equals(String.valueOf(valueToBeAppended), ".")) {
-                reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
-                return false;
-            }
-            addToken(valueToBeAppended);
+        else if (Objects.equals(String.valueOf(valueToBeAppended), ".")) {
+            reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
+            return false;
         }
+        else if (previousType == atomType.NUMBER)
+            addToken(valueToBeAppended);
+
 
         // Handle addition of unary operator
 //        for (String token: tokens) {
@@ -191,7 +191,7 @@ public class CalculatorV2 extends Calculator {
 //            }
 //        }
         // Debugging
-        // System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
+        //System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
         return true;
     }
 
@@ -255,7 +255,7 @@ public class CalculatorV2 extends Calculator {
         Stack<String> rpnStack = new Stack<>();
         int ctr = 0;
         int ctrLimit = 10000;
-
+        System.out.println("R"+getRPN());
         if (getRPN().size() == 1) {
             return Double.parseDouble(getRPN().get(0));
         }
