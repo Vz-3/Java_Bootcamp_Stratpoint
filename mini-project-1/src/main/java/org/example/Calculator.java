@@ -17,7 +17,7 @@ public class Calculator {
     protected HashMap<Character, Integer> numberMap = new HashMap<>();
     protected HashMap<Character, Integer> symbolMap = new HashMap<>();
 
-    private char negativeOperator = 'n';
+    private char negativeOperator = 'n'; //technically, the unary operator - is not an operator, but a function, higher precedence.
 
     enum atomType {
         NUMBER,
@@ -117,11 +117,11 @@ public class Calculator {
             } else {
                 if (token == getNegativeOperator()) {
                     if (negativeIsUsed ||  dotIsUsed || previousType == atomType.NUMBER) {
-                        reportError(errorType, " Redundant / Invalid use of unary operator");
+                        reportError(errorType, " Redundant / Invalid use of unary operator.");
                         return false;
                     }
-                    if (previousType == atomType.OPERATOR)
-                        valueToBeAppended.setLength(0);
+
+                    valueToBeAppended.setLength(0);
                     negativeIsUsed = true;
                     valueToBeAppended.append('-');
                 }
@@ -173,8 +173,8 @@ public class Calculator {
         }
 
         // debugging
-//        System.out.println("Values: "+values);
-//        System.out.println("Operations: "+operations);
+       System.out.println("Values: "+values);
+       System.out.println("Operations: "+operations);
 
         return true;
     }

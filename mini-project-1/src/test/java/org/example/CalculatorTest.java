@@ -75,6 +75,12 @@ class CalculatorTest {
     }
 
     @Test
+    void testCalculateNegativeUnary3() {
+        double delta = 0.0001; // for tolerance
+        Assertions.assertEquals(-29.81125224,calculatorHelper("n10+.25*100/(n9/3^2^(n1))+n15",false), delta);
+    }
+
+    @Test
     void testCalculateNaN() {
         Assertions.assertEquals(Double.NaN, calculatorHelper("10+2*0/0"));
     }

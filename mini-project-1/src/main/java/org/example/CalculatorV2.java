@@ -57,12 +57,14 @@ public class CalculatorV2 extends Calculator {
     }
 
     private void addToken(StringBuilder token) {
-        this.tokens.add(String.valueOf(token));
+        double foo = Double.parseDouble(String.valueOf(token));
+        this.tokens.add(String.valueOf(foo));
     }
 
     private boolean tokenizeExpression() {
         // Tokenize the expression into atoms and assess the logic.
         boolean dotIsUsed = false; // resets whenever the tokenizer encounters an operator.
+        boolean negativeIsUsed = false;
         atomType currentType;
         StringBuilder valueToBeAppended = new StringBuilder();
         String errorType = "Parser";
@@ -84,6 +86,10 @@ public class CalculatorV2 extends Calculator {
             valueToBeAppended.append(expr[0]);
             if (previousType == atomType.DOT)
                 dotIsUsed = true;
+            else if (previousType == atomType.NUMBER && expr[0] == getNegativeOperator()) {
+                negativeIsUsed = true;
+                valueToBeAppended.replace(0,1,"-0");
+            }
         }
 
         for (int i = 1; i<expression.length();i++) {
@@ -92,7 +98,7 @@ public class CalculatorV2 extends Calculator {
 
             // This is only accessible if the previous type is a number, which it should always be.
             if (previousType == currentType) {
-                if (currentType == atomType.OPERATOR || currentType == atomType.DOT) {
+                if (currentType == atomType.OPERATOR || currentType == atomType.DOT || token == getNegativeOperator()) {
                     reportError(errorType, "redundant symbol.");
                     return false;
                 }
@@ -102,16 +108,23 @@ public class CalculatorV2 extends Calculator {
                     valueToBeAppended.append(token); // Only number at this point.
             }
             else {
-                if (currentType == atomType.OPERATOR) {
+                if (token == getNegativeOperator()) {
+                    if (negativeIsUsed || dotIsUsed || previousType == atomType.NUMBER || previousType == atomType.RIGHT_PARENTHESIS) {
+                        reportError(errorType, "Redundant / Invalid use of unary operator.");
+                    }
+                    valueToBeAppended.setLength(0);
+                    negativeIsUsed = true;
+                    valueToBeAppended.append("-0");
+                }
+                else if (currentType == atomType.OPERATOR) {
                     /*
                     Given that the expression can't start with an operator or dot, the change of type into operator
                     indicates that a number existed before it, ergo append the value.
                     */
-                    if (previousType == atomType.DOT) {
-                        reportError(errorType, "invalid use of '.'");
+                    if (previousType == atomType.DOT || expr[i-1] == getNegativeOperator()) {
+                        reportError(errorType, "invalid use of "+token);
                         return false;
                     }
-
                     if (previousType == atomType.LEFT_PARENTHESIS) {
                         reportError(errorType, "missing expression before "+token);
                         return false;
@@ -119,8 +132,8 @@ public class CalculatorV2 extends Calculator {
                     if (previousType == atomType.NUMBER)
                         addToken(valueToBeAppended); // finally finishes a number and appends it.
 
-                    // dotIsUsed is set to false again
                     dotIsUsed = false;
+                    negativeIsUsed = false;
                     addToken(token);
 
                     valueToBeAppended.setLength(0);
@@ -137,7 +150,7 @@ public class CalculatorV2 extends Calculator {
                     addToken(token);
                 }
                 else if (currentType == atomType.RIGHT_PARENTHESIS) {
-                    if (previousType == atomType.OPERATOR || previousType == atomType.LEFT_PARENTHESIS || previousType == atomType.DOT) {
+                    if (previousType == atomType.OPERATOR || previousType == atomType.LEFT_PARENTHESIS || previousType == atomType.DOT || token == getNegativeOperator()) {
                         reportError(errorType, "missing expression before "+token);
                         return false;
                     }
@@ -173,7 +186,7 @@ public class CalculatorV2 extends Calculator {
             }
         }
 
-        if (previousType == atomType.OPERATOR) {
+        if (previousType == atomType.OPERATOR || expr[expression.length()-1] == getNegativeOperator() || previousType == atomType.LEFT_PARENTHESIS ) {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
@@ -185,7 +198,7 @@ public class CalculatorV2 extends Calculator {
             addToken(valueToBeAppended);
 
         // Debugging
-        //System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
+        System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
         return true;
     }
 
@@ -250,6 +263,7 @@ public class CalculatorV2 extends Calculator {
         int ctr = 0;
         int ctrLimit = 10000;
 
+        System.out.println("Rpn:"+getRPN());
         if (getRPN().size() == 1) {
             return Double.parseDouble(getRPN().get(0));
         }
@@ -268,7 +282,7 @@ public class CalculatorV2 extends Calculator {
                     case "-" -> opr1 - opr2;
                     case "*" -> opr1 * opr2;
                     case "/" -> opr1 / opr2;
-                    default -> getExponentResult(opr1, opr2);
+                    default -> Math.pow(opr1, opr2);
                 };
                 rpnStack.push(answer.toString());
             }
@@ -276,22 +290,6 @@ public class CalculatorV2 extends Calculator {
             ctr++;
         }
         return Double.parseDouble(rpnStack.pop());
-    }
-
-    private double getExponentResult(Double base, Double exp) {
-        double res = 1;
-
-        if (base == NaN || exp == NaN)
-            return NaN;
-
-        if (base == 0)
-            return 0;
-
-        if (exp == 0)
-            return res;
-        else
-            return base * getExponentResult(base, exp - 1);
-
     }
 
     private boolean checkIfNumber(String element) {
