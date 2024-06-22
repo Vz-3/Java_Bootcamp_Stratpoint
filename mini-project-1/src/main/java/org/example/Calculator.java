@@ -8,7 +8,8 @@ public class Calculator {
     protected String appName = "My Calculator App";
     protected String closeKeyword = "quit";
     protected String expression = "";
-    String answer = "";
+
+    private String answer = "";
 
     private final ArrayList<Double> values = new ArrayList<>();
     private final ArrayList<Character> operations = new ArrayList<>();
@@ -16,6 +17,7 @@ public class Calculator {
     protected HashMap<Character, Integer> numberMap = new HashMap<>();
     protected HashMap<Character, Integer> symbolMap = new HashMap<>();
 
+    private char negativeOperator = 'n';
 
     enum atomType {
         NUMBER,
@@ -96,7 +98,7 @@ public class Calculator {
             valueToBeAppended.append(expr[0]);
             if (previousType == atomType.DOT)
                 dotIsUsed = true;
-            else if (previousType == atomType.NUMBER && expr[0] == 'n') {
+            else if (previousType == atomType.NUMBER && expr[0] == getNegativeOperator()) {
                 negativeIsUsed = true;
                 valueToBeAppended.replace(0,1,"-");
             }
@@ -107,13 +109,13 @@ public class Calculator {
             currentType = checkAtomType(token);
 
             if (previousType == currentType) {
-                if (currentType == atomType.OPERATOR || currentType == atomType.DOT || token == 'n') {
+                if (currentType == atomType.OPERATOR || currentType == atomType.DOT || token == getNegativeOperator()) {
                     reportError(errorType, "redundant symbol.");
                     return false;
                 } else
                     valueToBeAppended.append(token);
             } else {
-                if (token == 'n') {
+                if (token == getNegativeOperator()) {
                     if (negativeIsUsed ||  dotIsUsed || previousType == atomType.NUMBER) {
                         reportError(errorType, " Redundant / Invalid use of unary operator");
                         return false;
@@ -132,7 +134,7 @@ public class Calculator {
                         reportError(errorType, "invalid use of '.'");
                         return false;
                     }
-                    if (expr[i-1] == 'n') {
+                    if (expr[i-1] == getNegativeOperator()) {
                         reportError(errorType, "invalid use of unary operator '-'");
                         return false;
                     }
@@ -158,7 +160,7 @@ public class Calculator {
         }
 
         // if last atom is an operator, else append the value.
-        if (previousType == atomType.OPERATOR || expr[expression.length()-1] == 'n') {
+        if (previousType == atomType.OPERATOR || expr[expression.length()-1] == getNegativeOperator()) {
             reportError(errorType, "missing expression after '"+expr[expression.length()-1]+"'.");
             return false;
         }
@@ -171,8 +173,8 @@ public class Calculator {
         }
 
         // debugging
-        System.out.println("Values: "+values);
-        System.out.println("Operations: "+operations);
+//        System.out.println("Values: "+values);
+//        System.out.println("Operations: "+operations);
 
         return true;
     }
@@ -255,9 +257,13 @@ public class Calculator {
     public String getAnswer() {return answer;}
 
     protected void setAnswer(String newAnswer) {this.answer = newAnswer; }
+
+    public char getNegativeOperator() { return negativeOperator;}
+
+    public void setNegativeOperator(char newNegativeOperator) {this.negativeOperator = newNegativeOperator;}
     // Misc.
     void initializeHashMap() {
-        numberMap.put('n', null); // will serve as the character for the replacement of unary operator '-', might add option to assign what symbol in the future.
+        numberMap.put(getNegativeOperator(), null); // will serve as the character for the replacement of unary operator '-', might add option to assign what symbol in the future.
         numberMap.put('0', null);
         numberMap.put('1', null);
         numberMap.put('2', null);

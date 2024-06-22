@@ -87,7 +87,8 @@ public class CalculatorV2 extends Calculator {
         }
 
         for (int i = 1; i<expression.length();i++) {
-            currentType = checkAtomType(expr[i]);
+            char token = expr[i];
+            currentType = checkAtomType(token);
 
             // This is only accessible if the previous type is a number, which it should always be.
             if (previousType == currentType) {
@@ -96,9 +97,9 @@ public class CalculatorV2 extends Calculator {
                     return false;
                 }
                 else if (currentType == atomType.LEFT_PARENTHESIS || currentType == atomType.RIGHT_PARENTHESIS)
-                    addToken(expr[i]);
+                    addToken(token);
                 else
-                    valueToBeAppended.append(expr[i]); // Only number at this point.
+                    valueToBeAppended.append(token); // Only number at this point.
             }
             else {
                 if (currentType == atomType.OPERATOR) {
@@ -112,7 +113,7 @@ public class CalculatorV2 extends Calculator {
                     }
 
                     if (previousType == atomType.LEFT_PARENTHESIS) {
-                        reportError(errorType, "missing expression before "+expr[i]);
+                        reportError(errorType, "missing expression before "+token);
                         return false;
                     }
                     if (previousType == atomType.NUMBER)
@@ -120,28 +121,28 @@ public class CalculatorV2 extends Calculator {
 
                     // dotIsUsed is set to false again
                     dotIsUsed = false;
-                    addToken(expr[i]);
+                    addToken(token);
 
                     valueToBeAppended.setLength(0);
                 }
                 else if (currentType == atomType.LEFT_PARENTHESIS) {
                     if (previousType == atomType.NUMBER || previousType == atomType.DOT) {
-                        reportError(errorType, "missing operator before "+expr[i]);
+                        reportError(errorType, "missing operator before "+token);
                         return false;
                     }
                     else if (previousType == atomType.RIGHT_PARENTHESIS) {
-                        reportError(errorType, "missing operator before "+expr[i]);
+                        reportError(errorType, "missing operator before "+token);
                         return false;
                     }
-                    addToken(expr[i]);
+                    addToken(token);
                 }
                 else if (currentType == atomType.RIGHT_PARENTHESIS) {
                     if (previousType == atomType.OPERATOR || previousType == atomType.LEFT_PARENTHESIS || previousType == atomType.DOT) {
-                        reportError(errorType, "missing expression before "+expr[i]);
+                        reportError(errorType, "missing expression before "+token);
                         return false;
                     }
                     addToken(valueToBeAppended); // finally finishes a number and appends it.
-                    addToken(expr[i]);
+                    addToken(token);
                 }
                 else if (currentType == atomType.DOT) {
                     if (dotIsUsed && previousType == atomType.NUMBER) {
@@ -149,7 +150,7 @@ public class CalculatorV2 extends Calculator {
                         return false;
                     }
                     else if (previousType == atomType.RIGHT_PARENTHESIS) {
-                        reportError(errorType, "missing operator before "+expr[i]);
+                        reportError(errorType, "missing operator before "+token);
                         return false;
                     }
                     valueToBeAppended.append('.');
@@ -159,14 +160,14 @@ public class CalculatorV2 extends Calculator {
                     // Reset so that a new value will be appended.
                     if (previousType == atomType.OPERATOR || previousType == atomType.LEFT_PARENTHESIS) {
                         valueToBeAppended.setLength(0);
-                        valueToBeAppended.append(expr[i]);
+                        valueToBeAppended.append(token);
                     }
                     else if (previousType == atomType.RIGHT_PARENTHESIS) {
-                        reportError(errorType, "missing operator before "+expr[i]);
+                        reportError(errorType, "missing operator before "+token);
                         return false;
                     }
                     else
-                        valueToBeAppended.append(expr[i]);
+                        valueToBeAppended.append(token);
                 }
                 previousType = currentType;
             }
@@ -183,13 +184,6 @@ public class CalculatorV2 extends Calculator {
         else if (previousType == atomType.NUMBER)
             addToken(valueToBeAppended);
 
-
-        // Handle addition of unary operator
-//        for (String token: tokens) {
-//            if (token.length() == 1) {
-//                //an operator
-//            }
-//        }
         // Debugging
         //System.out.println("Tokens: "+tokens+" Size: "+tokens.size());
         return true;
@@ -255,7 +249,7 @@ public class CalculatorV2 extends Calculator {
         Stack<String> rpnStack = new Stack<>();
         int ctr = 0;
         int ctrLimit = 10000;
-        System.out.println("R"+getRPN());
+
         if (getRPN().size() == 1) {
             return Double.parseDouble(getRPN().get(0));
         }
