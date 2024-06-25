@@ -21,6 +21,14 @@
             <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Ignored  UNCONTROLLED RECURSION IN COMMONS-COLLECTIONS:COMMONS-COLLECTIONS
+Cx78f40514-81ff -->
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

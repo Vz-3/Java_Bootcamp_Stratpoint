@@ -2,6 +2,9 @@ package com.project;
 
 public class BookMany extends Book{
 
+    public BookMany() {
+    }
+
     public BookMany(String newTitle, int listOfAuthors, String idISBN, int listOfGenres, String newPublisher) {
         super(newTitle, listOfAuthors, idISBN, listOfGenres, newPublisher);
     }

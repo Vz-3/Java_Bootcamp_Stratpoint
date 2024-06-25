@@ -2,6 +2,9 @@ package com.project;
 
 public class BookWithAuthors extends Book{
 
+    public BookWithAuthors() {
+    }
+
     public BookWithAuthors(String newTitle, int listOfAuthors, String idISBN, String newGenre, String newPublisher) {
         super(newTitle, listOfAuthors, idISBN, newGenre, newPublisher);
     }

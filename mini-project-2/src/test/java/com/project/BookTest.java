@@ -14,27 +14,27 @@ class BookTest {
     }
 
     @Test
-    void getTitle() {
+    void test_getTitle() {
         assertEquals("The Count of Monte Cristo", book.getTitle());
     }
 
     @Test
-    void getAuthor() {
+    void test_getAuthor() {
         assertEquals("Alexandre Dumas", book.getAuthor());
     }
 
     @Test
-    void getISBN() {
+    void test_getISBN() {
         assertEquals("9780451529701", book.getISBN());
     }
 
     @Test
-    void getGenre() {
+    void test_getGenre() {
         assertEquals("Action", book.getGenre());
     }
 
     @Test
-    void getPublisher() {
+    void test_getPublisher() {
         assertEquals("Phil Blank", book.getPublisher());
     }
 }

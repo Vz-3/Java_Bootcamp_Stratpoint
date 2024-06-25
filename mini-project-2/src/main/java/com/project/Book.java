@@ -59,6 +59,9 @@ public class Book {
     }
 
     // Constructors
+    public Book() {
+    }
+
     public Book(String newTitle, String newAuthor, String idISBN, String newGenre, String newPublisher) {
         assignAttributes(newTitle, newAuthor, idISBN, newGenre, newPublisher);
         initializeHashMap();
