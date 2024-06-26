@@ -80,6 +80,11 @@ public class Library {
         }
     }
 
+    /**
+     * Returns <code>true</code> if a book matches the {@code targetISBN} parameter.
+     * @param targetISBN
+     * @return <code>true</code> if a book matches the {@code targetISBN} parameter.
+     */
     private boolean removeBook(String targetISBN) {
         for (Book bookToRemove: bookShelf) {
             if (bookToRemove.getISBN().equals(targetISBN))
@@ -88,6 +93,11 @@ public class Library {
         return false;
     }
 
+    /**
+     * Asks user to enter a valid ISBN and
+     * calls {@link #removeBook(String)} to
+     * remove the book matching the ISBN input.
+     */
     private void removeBookBy() {
         try {
             String validISBN = validateISBN();
