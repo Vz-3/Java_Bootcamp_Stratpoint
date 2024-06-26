@@ -1,7 +1,8 @@
-package com.Von.library;
+package com.Von.Models;
 
 import java.util.HashMap;
-import java.util.Scanner;
+
+import static com.Von.Services.Impl.BookServiceImpl.assignMultipleElements;
 
 public class Book {
     /**
@@ -19,7 +20,6 @@ public class Book {
     protected String[] attributes = new String[5];
     protected HashMap<Integer, String> attributeMap = new HashMap<>();
     protected String separator = ";";
-    private final Scanner scn = new Scanner(System.in);
 
     /**
      * Maps the index of attributes to the corresponding name
@@ -49,36 +49,6 @@ public class Book {
         this.attributes[3] = newGenre;
         this.attributes[4] = newPublisher;
     }
-    private String getValidString() {
-        String validString = "";
-        do {
-            try {
-                System.out.print(">");
-                validString = scn.nextLine();
-            } catch (Exception e) {
-                System.out.println("Invalid input, kindly try again.");
-            }
-        } while (validString.length() < 4 || validString.isBlank() || validString.contains(";"));
-        return validString;
-    }
-
-    /**
-     * Method for creating a formatted string for handling multiple values for a book
-     * attribute. Separated with the use of ';' char.
-     * @param elementsCount number of times to insert a value to the string.
-     * @param elementName name of book attribute
-     * @return <code>String</code> separated by ';'.
-     */
-    String assignMultipleElements(int elementsCount, String elementName) {
-        String elem = "";
-
-        for (int i=0;i<elementsCount;i++) {
-            System.out.println("Enter "+elementName+"["+i+"]:");
-            elem = elem.concat(getValidString()).trim().concat(separator);
-        }
-
-        return elem;
-    }
 
     // Constructors
     public Book() {
@@ -90,21 +60,21 @@ public class Book {
         initializeHashMap();
     }
 
-    protected Book(String newTitle, String newAuthor, String idISBN, int listOfGenres, String newPublisher) {
-        String multipleGenre = assignMultipleElements(listOfGenres, "genre");
+    protected Book(String newTitle, String newAuthor, String idISBN, Integer listOfGenres, String newPublisher) {
+        String multipleGenre = assignMultipleElements(listOfGenres, "genre", separator);
         assignAttributes(newTitle, newAuthor, idISBN, multipleGenre, newPublisher);
         initializeHashMap();
     }
 
-    protected Book(String newTitle, int listOfAuthors, String idISBN, String newGenre, String newPublisher) {
-        String multipleAuthors = assignMultipleElements(listOfAuthors, "author");
+    protected Book(String newTitle, Integer listOfAuthors, String idISBN, String newGenre, String newPublisher) {
+        String multipleAuthors = assignMultipleElements(listOfAuthors, "author", separator);
         assignAttributes(newTitle, multipleAuthors, idISBN, newGenre, newPublisher);
         initializeHashMap();
     }
 
-    protected Book(String newTitle, int listOfAuthors, String idISBN, int listOfGenres, String newPublisher) {
-        String multipleAuthors = assignMultipleElements(listOfAuthors, "author");
-        String multipleGenre = assignMultipleElements(listOfGenres, "genre");
+    protected Book(String newTitle, Integer listOfAuthors, String idISBN, Integer listOfGenres, String newPublisher) {
+        String multipleAuthors = assignMultipleElements(listOfAuthors, "author", separator);
+        String multipleGenre = assignMultipleElements(listOfGenres, "genre", separator);
 
         assignAttributes(newTitle, multipleAuthors, idISBN, multipleGenre, newPublisher);
         initializeHashMap();

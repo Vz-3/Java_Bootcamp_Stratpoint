@@ -1,12 +1,12 @@
-package com.Von.library;
+package com.Von.Models;
 
-public class BookWithGenres extends Book{
+public class BookWithGenres extends Book {
 
     public BookWithGenres() {
         super();
     }
 
-    public BookWithGenres(String newTitle, String newAuthor, String idISBN, int listOfGenres, String newPublisher) {
+    public BookWithGenres(String newTitle, String newAuthor, String idISBN, Integer listOfGenres, String newPublisher) {
         super(newTitle, newAuthor, idISBN, listOfGenres, newPublisher);
     }
 
