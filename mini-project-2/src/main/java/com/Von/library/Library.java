@@ -37,7 +37,7 @@ public class Library {
         do {
             try {
                 System.out.println("""
-                Library Management System\
+                ====== Library Management System ====== \
     
                 [1] - Register and add a book.\
     
@@ -46,7 +46,9 @@ public class Library {
                 [3] - Search for a book.\
 
                 [exit] - Exit application.\
-
+                
+                ======================================= \
+                
                 What would you like to do today?\
                 """);
 
@@ -82,7 +84,7 @@ public class Library {
 
     /**
      * Returns <code>true</code> if a book matches the {@code targetISBN} parameter.
-     * @param targetISBN
+     * @param targetISBN valid ISBN.
      * @return <code>true</code> if a book matches the {@code targetISBN} parameter.
      */
     private boolean removeBook(String targetISBN) {
@@ -163,6 +165,11 @@ public class Library {
     private ArrayList<Book> searchBook(int attributeIndex, String query) {
         ArrayList<Book> results = new ArrayList<>();
 
+        if (bookShelf.isEmpty())
+            return results;
+
+        System.out.println(bookShelf);
+
         switch (attributeIndex) {
             case 1: {
                     for (Book targetBook:bookShelf) {
@@ -180,7 +187,7 @@ public class Library {
                 break;
             case 3: {
                     for (Book targetBook:bookShelf) {
-                        if (targetBook.getISBN().toLowerCase().contains(query))
+                        if (targetBook.getISBN().contains(query))
                             results.add(targetBook);
                     }
                 }
@@ -224,7 +231,7 @@ public class Library {
             try {
                 if (ctr == 0) {
                     System.out.println("""
-                Search By: \
+                ====== Search By ===== \
     
                 [1] - Title\
     
@@ -237,6 +244,8 @@ public class Library {
                 [5] - Publisher\
                 
                 [quit] - Return to library options.\
+                
+                ====================== \
                 """);
                 }
                 System.out.println("Enter search preference:");
@@ -400,8 +409,7 @@ public class Library {
      */
     private boolean addBook(Book bookToAdd) {
         try {
-            this.bookShelf.add(bookToAdd);
-            return true;
+            return bookShelf.add(bookToAdd);
         } catch (Exception e) {
             System.err.println("Failed to add book: " + e.getMessage());
             return false;
@@ -425,7 +433,7 @@ public class Library {
             try {
                 if (ctr == 0) {
                     System.out.println("""
-                Book Configurations: \
+                ====== Book Configurations ====== \
     
                 [1] - Book with individual values for each attributes.\
     
@@ -436,6 +444,7 @@ public class Library {
                 [4] - Book with multiple authors and genres.\
                 
                 [quit] - Return to library options.\
+                ================================= \
                 """);
                 }
                 System.out.println("Enter book type:");
