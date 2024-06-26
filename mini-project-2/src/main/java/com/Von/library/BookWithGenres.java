@@ -1,8 +1,9 @@
-package com.project;
+package com.Von.library;
 
 public class BookWithGenres extends Book{
 
     public BookWithGenres() {
+        super();
     }
 
     public BookWithGenres(String newTitle, String newAuthor, String idISBN, int listOfGenres, String newPublisher) {

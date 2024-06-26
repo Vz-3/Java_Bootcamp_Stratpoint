@@ -1,4 +1,4 @@
-package com.project;
+package com.Von.library;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -21,6 +21,10 @@ public class Book {
     protected String separator = ";";
     private final Scanner scn = new Scanner(System.in);
 
+    /**
+     * Maps the index of attributes to the corresponding name
+     * of attribute for the use of {@link #displayAttributes()}.
+     */
     private void initializeHashMap() {
         attributeMap.put(0, "Title");
         attributeMap.put(1, "Author");
@@ -32,11 +36,11 @@ public class Book {
     /**
      * Helper function for the constructor class.
      * Takes in the parameters and assigns it to the class variable <code>attributes</code> in order.
-     * @param newTitle
-     * @param newAuthor can be multiple authors separated by <code>;</code>.
-     * @param idISBN
-     * @param newGenre can be multiple genres separated by <code>;</code>.
-     * @param newPublisher
+     * @param newTitle a single title.
+     * @param newAuthor single or multiple authors separated by <code>;</code>.
+     * @param idISBN a single validated ISBN.
+     * @param newGenre single or multiple genres separated by <code>;</code>.
+     * @param newPublisher a single publisher.
      */
     void assignAttributes(String newTitle, String newAuthor, String idISBN, String newGenre, String newPublisher) {
         this.attributes[0] = newTitle;
@@ -58,6 +62,13 @@ public class Book {
         return validString;
     }
 
+    /**
+     * Method for creating a formatted string for handling multiple values for a book
+     * attribute. Separated with the use of ';' char.
+     * @param elementsCount number of times to insert a value to the string.
+     * @param elementName name of book attribute
+     * @return <code>String</code> separated by ';'.
+     */
     String assignMultipleElements(int elementsCount, String elementName) {
         String elem = "";
 
@@ -71,6 +82,7 @@ public class Book {
 
     // Constructors
     public Book() {
+        initializeHashMap();
     }
 
     public Book(String newTitle, String newAuthor, String idISBN, String newGenre, String newPublisher) {
@@ -105,6 +117,12 @@ public class Book {
     }
 
     // Getters & setters
+
+    /**
+     * Returns the entire list of book attributes.
+     * @return <code>Array</code> of length 5 containing all
+     * book attributes.
+     */
     public String[] getBookAttributes() {
         return this.attributes;
     }

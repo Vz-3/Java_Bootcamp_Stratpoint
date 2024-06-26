@@ -62,7 +62,7 @@ Cx78f40514-81ff -->
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.project.Main</mainClass>
+                    <mainClass>com.Von.library.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
