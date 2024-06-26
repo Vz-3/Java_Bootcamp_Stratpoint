@@ -243,6 +243,7 @@ public class LibraryControllerImpl implements LibraryController {
                 [4] - Book with multiple authors and genres.\
                 
                 [quit] - Return to library options.\
+                
                 ================================= \
                 """);
                 }

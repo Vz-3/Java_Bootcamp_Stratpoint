@@ -131,7 +131,7 @@ public class LibraryServiceImpl implements LibraryService {
                 break;
         }
 
-        if (myBook != null)
+        if (myBook == null)
             throw new NullPointerException("Failed to build a book!");
         return myBook;
     }
