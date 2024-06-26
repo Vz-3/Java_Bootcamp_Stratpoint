@@ -19,6 +19,7 @@ public class Book {
     protected String[] attributes = new String[5];
     protected HashMap<Integer, String> attributeMap = new HashMap<>();
     protected String separator = ";";
+    private final Scanner scn = new Scanner(System.in);
 
     private void initializeHashMap() {
         attributeMap.put(0, "Title");
@@ -44,15 +45,26 @@ public class Book {
         this.attributes[3] = newGenre;
         this.attributes[4] = newPublisher;
     }
+    private String inputValidation() {
+        String validString = "";
+        do {
+            try {
+                System.out.println(">");
+                validString = scn.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid input, kindly try again.");
+            }
+        } while (validString.length() < 4 || validString.isBlank() || validString.contains(";"));
+        return validString;
+    }
 
-    // need input validation
     String assignMultipleElements(int elementsCount, String elementName) {
         String elem = "";
 
-        Scanner scn = new Scanner(System.in);
+
         for (int i=0;i<elementsCount;i++) {
             System.out.println("Enter "+elementName+"["+i+"]:");
-            elem = elem.concat(scn.nextLine()).concat(separator);
+            elem = elem.concat(scn.nextLine()).trim().concat(separator);
         }
 
         return elem;

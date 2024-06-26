@@ -300,7 +300,7 @@ public class Library {
             case 4:
                 int genreCount2 = validateInt("number of genres");
                 int authorCount2 = validateInt("number of authors");
-                myBook = new BookMany(myTitle, authorCount2, myISBN, genreCount2, myPublisher);
+                myBook = new BookWithAuthorsGenres(myTitle, authorCount2, myISBN, genreCount2, myPublisher);
                 break;
             default:
                 System.out.println("How did you get here?");
