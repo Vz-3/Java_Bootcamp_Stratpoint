@@ -41,8 +41,6 @@ public class LibraryServiceImpl implements LibraryService {
         if (bookShelf.isEmpty())
             return results;
 
-        System.out.println(bookShelf);
-
         switch (attributeIndex) {
             case 1: {
                 for (Book targetBook:bookShelf) {
