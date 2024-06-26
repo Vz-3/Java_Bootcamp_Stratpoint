@@ -45,11 +45,11 @@ public class Book {
         this.attributes[3] = newGenre;
         this.attributes[4] = newPublisher;
     }
-    private String inputValidation() {
+    private String getValidString() {
         String validString = "";
         do {
             try {
-                System.out.println(">");
+                System.out.print(">");
                 validString = scn.nextLine();
             } catch (Exception e) {
                 System.out.println("Invalid input, kindly try again.");
@@ -61,10 +61,9 @@ public class Book {
     String assignMultipleElements(int elementsCount, String elementName) {
         String elem = "";
 
-
         for (int i=0;i<elementsCount;i++) {
             System.out.println("Enter "+elementName+"["+i+"]:");
-            elem = elem.concat(scn.nextLine()).trim().concat(separator);
+            elem = elem.concat(getValidString()).trim().concat(separator);
         }
 
         return elem;

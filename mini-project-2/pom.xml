@@ -33,6 +33,7 @@ Cx78f40514-81ff -->
 
     <build>
         <plugins>
+            <!--Compile-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -42,13 +43,13 @@ Cx78f40514-81ff -->
                     <target>15</target>
                 </configuration>
             </plugin>
-
+            <!--Test-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
             </plugin>
-
+            <!--Test-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

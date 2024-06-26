@@ -288,18 +288,18 @@ public class Library {
                 myBook = new Book(myTitle, myAuthor, myISBN, myGenre, myPublisher);
                 break;
             case 2:
-                int authorCount = validateInt("number of authors");
                 String myGenre2 = validateString("genre");
+                int authorCount = validateInt("number of authors");
                 myBook = new BookWithAuthors(myTitle, authorCount, myISBN, myGenre2, myPublisher);
                 break;
             case 3:
-                int genreCount = validateInt("number of genres");
                 String myAuthor2 = validateString("author");
+                int genreCount = validateInt("number of genres");
                 myBook = new BookWithGenres(myTitle, myAuthor2, myISBN, genreCount, myPublisher);
                 break;
             case 4:
-                int genreCount2 = validateInt("number of genres");
                 int authorCount2 = validateInt("number of authors");
+                int genreCount2 = validateInt("number of genres");
                 myBook = new BookWithAuthorsGenres(myTitle, authorCount2, myISBN, genreCount2, myPublisher);
                 break;
             default:
