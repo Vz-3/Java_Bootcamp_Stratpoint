@@ -96,7 +96,7 @@ public class Library {
             if (success)
                 System.out.println("Successfully removed book with ISBN:"+validISBN);
             else
-                System.out.println("Failed to remove book with ISBN:"+validISBN);
+                System.out.println("Failed to remove book with ISBN {"+validISBN+"}");
         } catch (Exception e) {
             System.err.println("Something went wrong! Error: " + e.getMessage());
         }
@@ -139,7 +139,7 @@ public class Library {
                 }
             }
         } else {
-            System.out.println("Failed to find results with search query:"+target);
+            System.out.println("Failed to find results with search query {"+target+"}");
         }
     }
 
@@ -214,7 +214,7 @@ public class Library {
             try {
                 if (ctr == 0) {
                     System.out.println("""
-                Book Configurations: \
+                Search By: \
     
                 [1] - Title\
     
@@ -229,7 +229,7 @@ public class Library {
                 [quit] - Return to library options.\
                 """);
                 }
-                System.out.println("Enter book attribute:");
+                System.out.println("Enter search preference:");
                 String userInput = scn.nextLine();
 
                 if (userInput.equalsIgnoreCase("quit"))
