@@ -22,8 +22,9 @@ public class LibraryServiceImpl implements LibraryService {
      */
     public boolean removeBook(String targetISBN, ArrayList<Book> bookShelf) {
         for (Book bookToRemove: bookShelf) {
-            if (bookToRemove.getISBN().equals(targetISBN))
-                return true;
+            if (bookToRemove.getISBN().equals(targetISBN)) {
+                return bookShelf.remove(bookToRemove);
+            }
         }
         return false;
     }
