@@ -193,13 +193,14 @@ public class LibraryControllerImpl implements LibraryController {
                     if (userInput.matches("[12345]")) {
                         attrIndex = Integer.parseInt(userInput);
                         proceed = true;
+                        isValidInput = true;
                     }
                 }
                 ctr++;
             } catch (Exception e) {
                 System.out.println("Invalid input, kindly try again.");
             }
-        } while (ctr > maxLimit || isValidInput);
+        } while (ctr < maxLimit && !isValidInput);
 
         if (proceed) {
             try {
@@ -257,13 +258,14 @@ public class LibraryControllerImpl implements LibraryController {
                     if (userInput.matches("[1234]")) {
                         bookType = Integer.parseInt(userInput);
                         proceed = true;
+                        isValidInput = true;
                     }
                 }
                 ctr++;
             } catch (Exception e) {
                 System.out.println("Invalid input, kindly try again.");
             }
-        } while (ctr > maxLimit || isValidInput);
+        } while (ctr < maxLimit && !isValidInput);
 
         if (proceed) {
             Book newBook = libService.buildBook(bookType);
