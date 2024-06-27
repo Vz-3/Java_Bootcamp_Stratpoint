@@ -33,5 +33,19 @@
         "isbn": "9781853267333",
         "genre": "Classics;Fiction;Adventure;Romance;Historical;",
         "publisher": "Wordsworth "
+    },
+    {
+        "title": "ABCDE",
+        "author": "mikey",
+        "isbn": "9780060740450",
+        "genre": "fiction",
+        "publisher": "random"
+    },
+    {
+        "title": "Abracadabra",
+        "author": "Bob Ong",
+        "isbn": "9780060740542",
+        "genre": "fiction",
+        "publisher": "Choose Goose House"
     }
 ]

@@ -2,7 +2,7 @@ package com.Von.Models;
 
 import java.util.HashMap;
 
-import static com.Von.Services.Impl.BookServiceImpl.assignMultipleElements;
+import static com.Von.Services.Utils.UtilsService.assignMultipleElements;
 
 public class Book {
     /**

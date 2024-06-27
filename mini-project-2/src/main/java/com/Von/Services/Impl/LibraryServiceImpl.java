@@ -8,8 +8,8 @@ import com.Von.Services.LibraryService;
 
 import java.util.ArrayList;
 
-import static com.Von.Services.Impl.BookServiceImpl.*;
-import static com.Von.Services.Impl.BookServiceImpl.validateInt;
+import static com.Von.Services.Utils.UtilsService.*;
+import static com.Von.Services.Utils.UtilsService.validateInt;
 
 public class LibraryServiceImpl implements LibraryService {
     public LibraryServiceImpl() {
@@ -101,11 +101,11 @@ public class LibraryServiceImpl implements LibraryService {
      * @param bookType select from list of possible Book classes.
      * @return <code>Book</code> object.
      */
-    public Book buildBook(Integer bookType) {
+    public Book buildBook(Integer bookType, ArrayList<Book> books) {
         Book myBook = null;
 
         String myTitle = validateString("title");
-        String myISBN = validateISBN();
+        String myISBN = validateISBN(books);
         String myPublisher = validateString("publisher");
 
         switch (bookType) {

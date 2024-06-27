@@ -6,10 +6,10 @@ import java.util.Scanner;
 import com.Von.Models.Book;
 import com.Von.Controllers.LibraryController;
 
-import static com.Von.Services.Impl.DataManagementServiceImpl.importData;
-import static com.Von.Services.Impl.DataManagementServiceImpl.storeData;
-import static com.Von.Services.Impl.BookServiceImpl.validateISBN;
-import static com.Von.Services.Impl.BookServiceImpl.validateString;
+import static com.Von.Services.Utils.UtilsService.validateISBN;
+import static com.Von.Services.Utils.UtilsService.storeData;
+import static com.Von.Services.Utils.UtilsService.importData;
+import static com.Von.Services.Utils.UtilsService.validateString;
 import com.Von.Services.Impl.LibraryServiceImpl;
 import com.Von.Services.LibraryService;
 
@@ -116,7 +116,7 @@ public class LibraryControllerImpl implements LibraryController {
      */
     public void removeBookBy() {
         try {
-            String validISBN = validateISBN();
+            String validISBN = validateISBN(bookShelf);
 
             Boolean success = libService.removeBook(validISBN, bookShelf);
             if (success)
@@ -289,7 +289,7 @@ public class LibraryControllerImpl implements LibraryController {
         } while (ctr < maxLimit && !isValidInput);
 
         if (proceed) {
-            Book newBook = libService.buildBook(bookType);
+            Book newBook = libService.buildBook(bookType, bookShelf);
             Boolean success = libService.addBook(newBook, bookShelf);
             String resultMessage = success ? "Successfully added an entry!" : "Failed to add book.";
             System.out.println(resultMessage);
