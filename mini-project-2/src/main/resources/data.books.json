@@ -1,0 +1,37 @@
+[
+    {
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "isbn": "9780446310789",
+        "genre": "Bildungsroman",
+        "publisher": "J. B. Lippincott & Co"
+    },
+    {
+        "title": "My Salty Mary",
+        "author": "Cynthia Hand;Brodi Ashton;",
+        "isbn": "9780062930125",
+        "genre": "Historical",
+        "publisher": "Harper Collins"
+    },
+    {
+        "title": "One Hundred Years of Solitude",
+        "author": "Gabriel Garcia Marquez",
+        "isbn": "9780060740450",
+        "genre": "Fiction;Fantasy;",
+        "publisher": "Harper Perennial"
+    },
+    {
+        "title": "When We Become Ours",
+        "author": "Shannon Gibney;Nicole Chung;",
+        "isbn": "9780063144408",
+        "genre": "Fiction;Young Adult;",
+        "publisher": "Random penguin house"
+    },
+    {
+        "title": "The Count of Monte Cristo",
+        "author": "Alexandre Dumas",
+        "isbn": "9781853267333",
+        "genre": "Classics;Fiction;Adventure;Romance;Historical;",
+        "publisher": "Wordsworth "
+    }
+]

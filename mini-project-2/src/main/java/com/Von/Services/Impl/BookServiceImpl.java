@@ -34,6 +34,21 @@ public class BookServiceImpl implements BookService {
         return input;
     }
 
+    public static String validateString(String attributeName, Integer minLength) {
+        String input;
+        do {
+            try {
+                System.out.println("Enter "+attributeName+":");
+                input = scn.nextLine();
+            } catch (Exception e) {
+                System.err.println("Error reading input: " + e.getMessage());
+                input = ""; // to reset the input.
+            }
+        } while(input.trim().length() < minLength || input.isBlank() || input.contains(";"));
+
+        return input;
+    }
+
     /**
      * Method for validating the ISBN input with the use of
      * commons-validator from apache. Note that the return value

@@ -6,6 +6,8 @@ import java.util.Scanner;
 import com.Von.Models.Book;
 import com.Von.Controllers.LibraryController;
 
+import static com.Von.Services.Impl.DataManagementServiceImpl.importData;
+import static com.Von.Services.Impl.DataManagementServiceImpl.storeData;
 import static com.Von.Services.Impl.BookServiceImpl.validateISBN;
 import static com.Von.Services.Impl.BookServiceImpl.validateString;
 import com.Von.Services.Impl.LibraryServiceImpl;
@@ -14,10 +16,11 @@ import com.Von.Services.LibraryService;
 public class LibraryControllerImpl implements LibraryController {
     private final Scanner scn = new Scanner(System.in);
     private static LibraryControllerImpl singleInstance = null;
-    private final ArrayList<Book> bookShelf = new ArrayList<>();
+    private ArrayList<Book> bookShelf = new ArrayList<>();
     private final LibraryService libService = new LibraryServiceImpl();
 
     private LibraryControllerImpl() {
+            bookShelf = importData();
     }
 
     /**
@@ -51,6 +54,8 @@ public class LibraryControllerImpl implements LibraryController {
                 [2] - Remove an existing book.\
                 
                 [3] - Search for a book.\
+                
+                [4] - Display bookshelf\
 
                 [exit] - Exit application.\
                 
@@ -63,7 +68,7 @@ public class LibraryControllerImpl implements LibraryController {
                 if (userInput.equalsIgnoreCase("exit"))
                     usingLibrary = false;
                 else {
-                    if (userInput.matches("[123]")) {
+                    if (userInput.matches("[1234]")) {
                         libraryOption = Integer.parseInt(userInput);
                         usingLibrary = false;
                     }
@@ -83,10 +88,25 @@ public class LibraryControllerImpl implements LibraryController {
             case 3:
                 searchBookBy();
                 break;
-            default:
-                System.out.println("Closing library!");
+            case 4:
+                displayCurrentBooks();
+                break;
+            default: {
+                    if (!bookShelf.isEmpty())
+                        storeData(bookShelf);
+                    System.out.println("Closing library!");
+                }
                 break;
         }
+    }
+
+    public void displayCurrentBooks() {
+        for (Book book: bookShelf) {
+            System.out.println("======================");
+            book.displayAttributes();
+        }
+        System.out.println("======================");
+        continueWithProgram();
     }
 
     /**
@@ -117,7 +137,7 @@ public class LibraryControllerImpl implements LibraryController {
      */
     private void processSearch(Integer attributeIndex) {
         String target;
-        target = validateString("search query");
+        target = validateString("search query", 3);
 
         ArrayList<Book> results = libService.searchBook(attributeIndex, target, bookShelf);
 
@@ -136,6 +156,7 @@ public class LibraryControllerImpl implements LibraryController {
             // Loops through all given attributes of a book or just the title.
             if (prompt.equals("y")) {
                 for (Book book: results) {
+                    System.out.println();
                     book.displayAttributes();
                 }
             }
@@ -298,7 +319,10 @@ public class LibraryControllerImpl implements LibraryController {
 
         if (input.equals("y"))
             start();
-        else
+        else {
+            if (!bookShelf.isEmpty())
+                storeData(bookShelf);
             System.out.println("Closing program...");
+        }
     }
 }

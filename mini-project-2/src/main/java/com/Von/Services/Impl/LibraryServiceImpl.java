@@ -38,13 +38,18 @@ public class LibraryServiceImpl implements LibraryService {
      */
     public ArrayList<Book> searchBook(Integer attributeIndex, String query, ArrayList<Book> bookShelf) {
         ArrayList<Book> results = new ArrayList<>();
+        query = query.toLowerCase();
 
-        if (bookShelf.isEmpty())
+        if (bookShelf.isEmpty()) {
+            System.out.println("The library is empty! Kindly add some books.");
             return results;
+        }
+
 
         switch (attributeIndex) {
             case 1: {
                 for (Book targetBook:bookShelf) {
+                    // System.out.println("Title:"+targetBook.getTitle()+targetBook.getTitle().toLowerCase().contains(query));
                     if (targetBook.getTitle().toLowerCase().contains(query))
                         results.add(targetBook);
                 }
@@ -52,6 +57,7 @@ public class LibraryServiceImpl implements LibraryService {
             break;
             case 2: {
                 for (Book targetBook:bookShelf) {
+                    // System.out.println("Author:"+targetBook.getAuthor()+targetBook.getAuthor().toLowerCase().contains(query));
                     if (targetBook.getAuthor().toLowerCase().contains(query))
                         results.add(targetBook);
                 }
@@ -66,6 +72,7 @@ public class LibraryServiceImpl implements LibraryService {
             break;
             case 4: {
                 for (Book targetBook : bookShelf) {
+                    // System.out.println("Genre:"+targetBook.getGenre()+targetBook.getGenre().toLowerCase().contains(query));
                     if (targetBook.getGenre().toLowerCase().contains(query))
                         results.add(targetBook);
                 }
@@ -73,6 +80,7 @@ public class LibraryServiceImpl implements LibraryService {
             break;
             case 5: {
                 for (Book targetBook:bookShelf) {
+                    // System.out.println("Publisher:"+targetBook.getPublisher()+targetBook.getPublisher().toLowerCase().contains(query));
                     if (targetBook.getPublisher().toLowerCase().contains(query))
                         results.add(targetBook);
                 }
