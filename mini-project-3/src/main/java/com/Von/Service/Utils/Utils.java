@@ -9,16 +9,16 @@ public class Utils {
     private static final Scanner scn = new Scanner(System.in);
     private static final Integer defaultMinLength = 4;
     private static final Integer defaultMaxLength = 20;
+    private static final Integer defaultMaxPrice = 9_999_999;
+
     private Utils() {}
 
     private static String validator(String fieldName, Integer minLength, Integer maxLength) {
         String validString;
-        Boolean isInvalidString = true;
-        Boolean isFirstTime = true;
+        Boolean firstTime = true;
         final Pattern invalidChars = Pattern.compile("[^a-zA-z0-9.,()&\\s]");
 
         System.out.printf("%s:", fieldName);
-
         do {
             try {
 
@@ -28,7 +28,7 @@ public class Utils {
                 if (validString.isBlank()
                         || (validString.trim().length() < minLength || validString.trim().length() > maxLength)
                         || matcher.find()) {
-                    if (isFirstTime) {
+                    if (firstTime) {
                         System.err.printf("""
                                 ===== Invalid input =====
                                 Either:
@@ -37,20 +37,18 @@ public class Utils {
                                 \t More than %d characters
                                 \t Invalid character/symbol
                                 Please try again:""", minLength, maxLength);
-                        isFirstTime = false;
+                        firstTime = false;
                     }
                     else
                         System.out.print("Title:");
                 }
                 else
-                    isInvalidString = false;
+                    return validString;
             } catch (NoSuchElementException e) {
                 System.err.println("Error reading input: " + e.getMessage());
                 validString = ""; // Reset the input.
             }
-        } while (isInvalidString);
-
-        return validString;
+        } while (true);
     }
 
     public static String validateStringInput(String fieldName) {
@@ -65,4 +63,26 @@ public class Utils {
         return validator(fieldName, minLength, maxLength);
     }
 
+    public static Double validatePriceInput() {
+        Double price = 0.0;
+        Boolean firstTime = true;
+
+        System.out.print("Set product price: ");
+        do {
+            try {
+                price = Double.parseDouble(scn.nextLine());
+                if (price <= 0 || price > defaultMaxPrice) {
+                    if (firstTime) {
+                        System.err.printf("Price must be greater than zero but cannot exceed the max limit of %d. %nPlease try again:",defaultMaxPrice);
+                        firstTime = false;
+                    }
+                    else
+                        System.out.print("Set product price:");
+                } else
+                    return price;
+            } catch (NumberFormatException e) {
+                System.err.print("Invalid input. Please enter a valid positive price:");
+            }
+        } while (true);
+    }
 }
