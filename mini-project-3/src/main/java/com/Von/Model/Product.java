@@ -2,7 +2,6 @@ package com.Von.Model;
 
 public class Product {
     private String productName;
-    private final String productSerialNo; //unique
     private Double productPrice;
     private String productDescription; //optional
     private String productSeller; //optional
@@ -11,7 +10,6 @@ public class Product {
 
     private Product(ProductBuilder builder) {
         this.productName = builder.productName;
-        this.productSerialNo = builder.productSerialNo;
         this.productPrice = builder.productPrice;
         this.productDescription = builder.productDescription;
         this.productSeller = builder.productSeller;
@@ -19,15 +17,13 @@ public class Product {
 
     public static class ProductBuilder {
         private final String productName;
-        private final String productSerialNo; //unique
         private final Double productPrice;
         private String productDescription; //optional
         private String productSeller; //optional
 
         // constructor for required fields.
-        public ProductBuilder(String _name, String _serialNo, Double _price ) {
+        public ProductBuilder(String _name, Double _price ) {
             this.productName = _name;
-            this.productSerialNo = _serialNo;
             this.productPrice = _price;
         }
 
@@ -68,9 +64,6 @@ public class Product {
         return productName;
     }
 
-    public String getProductSerialNo() {
-        return productSerialNo;
-    }
 
     public Double getProductPrice() {
         return productPrice;
@@ -89,14 +82,13 @@ public class Product {
     }
 
     public String[] getAllFields() {
-        String[] productFields = new String[6];
+        String[] productFields = new String[5];
 
         productFields[0] = getProductName();
-        productFields[1] = getProductSerialNo();
-        productFields[2] = String.valueOf(getProductPrice());
-        productFields[3] = getProductDescription()==null ? "" : getProductDescription();
-        productFields[4] = getProductSeller()==null ? "" : getProductSeller();
-        productFields[5] = String.valueOf(getProductCompoundedRatings());
+        productFields[1] = String.valueOf(getProductPrice());
+        productFields[2] = getProductDescription()==null ? "" : getProductDescription();
+        productFields[3] = getProductSeller()==null ? "" : getProductSeller();
+        productFields[4] = String.valueOf(getProductCompoundedRatings());
 
         return productFields;
     }

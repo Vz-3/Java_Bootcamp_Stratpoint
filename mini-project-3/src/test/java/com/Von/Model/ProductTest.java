@@ -3,29 +3,26 @@ package com.Von.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
     private Product productComplete;
     private Product productBareMinimum;
     private final String initName = "Iphone X";
-    private final String initSerialNo = "2103-071-150-0456";
     private final Double initPrice = 499.0;
     private final String initDescription = "is a smartphone designed, developed, and marketed by Apple...";
     private final String initSeller = "Apple";
 
     @BeforeEach
     void setUp() {
-        productComplete = new Product.ProductBuilder(initName, initSerialNo, initPrice)
+        productComplete = new Product.ProductBuilder(initName, initPrice)
                 .description(initDescription)
                 .seller(initSeller)
                 .build();
 
         assertNotNull(productComplete);
 
-        productBareMinimum = new Product.ProductBuilder(initName, initSerialNo, initPrice)
+        productBareMinimum = new Product.ProductBuilder(initName, initPrice)
                 .build();
 
         assertNotNull(productBareMinimum);
@@ -34,11 +31,6 @@ class ProductTest {
     @Test
     void test_getProductName() {
         assertEquals(initName, productComplete.getProductName());
-    }
-
-    @Test
-    void test_getProductSN() {
-        assertEquals(initSerialNo, productComplete.getProductSerialNo());
     }
 
     @Test
@@ -64,8 +56,8 @@ class ProductTest {
 
     @Test
     void test_getAllFields() {
-        String[] expectedComplete = new String[]{initName, initSerialNo, String.valueOf(initPrice), initDescription, initSeller, "3.0"};
-        String[] expectedBareMinimum = new String[]{initName, initSerialNo, String.valueOf(initPrice), "", "", "3.0"};
+        String[] expectedComplete = new String[]{initName, String.valueOf(initPrice), initDescription, initSeller, "3.0"};
+        String[] expectedBareMinimum = new String[]{initName, String.valueOf(initPrice), "", "", "3.0"};
 
         assertArrayEquals(expectedComplete, productComplete.getAllFields());
         assertArrayEquals(expectedBareMinimum, productBareMinimum.getAllFields());
