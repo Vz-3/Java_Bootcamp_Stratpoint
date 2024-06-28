@@ -5,11 +5,15 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Utils {
     private static final Scanner scn = new Scanner(System.in);
     private static final Integer defaultMinLength = 4;
     private static final Integer defaultMaxLength = 20;
     private static final Integer defaultMaxPrice = 9_999_999;
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
     private Utils() {}
 
@@ -45,7 +49,7 @@ public class Utils {
                 else
                     return validString;
             } catch (NoSuchElementException e) {
-                System.err.println("Error reading input: " + e.getMessage());
+                logger.error("Utils.validator error: ",e);
                 validString = ""; // Reset the input.
             }
         } while (true);
@@ -61,28 +65,5 @@ public class Utils {
 
     public static String validateStringInput(String fieldName, Integer minLength, Integer maxLength) {
         return validator(fieldName, minLength, maxLength);
-    }
-
-    public static Double validatePriceInput() {
-        Double price = 0.0;
-        Boolean firstTime = true;
-
-        System.out.print("Set product price: ");
-        do {
-            try {
-                price = Double.parseDouble(scn.nextLine());
-                if (price <= 0 || price > defaultMaxPrice) {
-                    if (firstTime) {
-                        System.err.printf("Price must be greater than zero but cannot exceed the max limit of %d. %nPlease try again:",defaultMaxPrice);
-                        firstTime = false;
-                    }
-                    else
-                        System.out.print("Set product price:");
-                } else
-                    return price;
-            } catch (NumberFormatException e) {
-                System.err.print("Invalid input. Please enter a valid positive price:");
-            }
-        } while (true);
     }
 }
