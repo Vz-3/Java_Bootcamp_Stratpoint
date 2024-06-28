@@ -2,7 +2,7 @@ package com.Von.Model;
 
 public class Product {
     private String productName;
-    private String productSerialNo; //unique
+    private final String productSerialNo; //unique
     private Double productPrice;
     private String productDescription; //optional
     private String productSeller; //optional
@@ -18,9 +18,9 @@ public class Product {
     }
 
     public static class ProductBuilder {
-        private String productName;
-        private String productSerialNo; //unique
-        private Double productPrice;
+        private final String productName;
+        private final String productSerialNo; //unique
+        private final Double productPrice;
         private String productDescription; //optional
         private String productSeller; //optional
 
@@ -86,5 +86,18 @@ public class Product {
 
     public Float getProductCompoundedRatings() {
         return productCompoundedRatings;
+    }
+
+    public String[] getAllFields() {
+        String[] productFields = new String[6];
+
+        productFields[0] = getProductName();
+        productFields[1] = getProductSerialNo();
+        productFields[2] = String.valueOf(getProductPrice());
+        productFields[3] = getProductDescription()==null ? "" : getProductDescription();
+        productFields[4] = getProductSeller()==null ? "" : getProductSeller();
+        productFields[5] = String.valueOf(getProductCompoundedRatings());
+
+        return productFields;
     }
 }

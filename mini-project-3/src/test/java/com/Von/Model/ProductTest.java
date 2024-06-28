@@ -3,6 +3,8 @@ package com.Von.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
@@ -58,5 +60,14 @@ class ProductTest {
 
         assertNull(productBareMinimum.getProductSeller());
         assertNotEquals(initSeller, productBareMinimum.getProductSeller());
+    }
+
+    @Test
+    void test_getAllFields() {
+        String[] expectedComplete = new String[]{initName, initSerialNo, String.valueOf(initPrice), initDescription, initSeller, "3.0"};
+        String[] expectedBareMinimum = new String[]{initName, initSerialNo, String.valueOf(initPrice), "", "", "3.0"};
+
+        assertArrayEquals(expectedComplete, productComplete.getAllFields());
+        assertArrayEquals(expectedBareMinimum, productBareMinimum.getAllFields());
     }
 }
