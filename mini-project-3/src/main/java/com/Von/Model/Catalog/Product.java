@@ -1,4 +1,4 @@
-package com.Von.Model;
+package com.Von.Model.Catalog;
 
 public class Product {
     private String productName;
@@ -63,7 +63,6 @@ public class Product {
     public String getProductName() {
         return productName;
     }
-
 
     public Double getProductPrice() {
         return productPrice;

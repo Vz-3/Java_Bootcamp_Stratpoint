@@ -1,5 +1,6 @@
 package com.Von.Model;
 
+import com.Von.Model.Catalog.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
