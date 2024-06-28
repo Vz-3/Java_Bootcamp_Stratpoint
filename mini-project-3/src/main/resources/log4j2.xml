@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <!-- Define the base path for log files -->
+    <Properties>
+        <Property name="basePath">./logs</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console appender for severe and error messages -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </Console>
+
+        <!-- RollingFile appender for all messages -->
+        <RollingFile name="fileLogger" fileName="${basePath}/app.log"
+                     filePattern="${basePath}/app-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <!-- Max 10 files will be created every day -->
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${basePath}" maxDepth="10">
+                    <IfFileName glob="app-*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Root logger referring to both appenders -->
+        <Root level="info" additivity="false">
+            <AppenderRef ref="console" level="error" />
+            <AppenderRef ref="fileLogger" />
+        </Root>
+    </Loggers>
+</Configuration>
