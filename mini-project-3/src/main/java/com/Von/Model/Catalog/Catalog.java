@@ -3,22 +3,34 @@ package com.Von.Model.Catalog;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Catalog<K, V> {
-    private static Catalog<?, ?> singleInstance = null;
-    private final Map<K, V> productCatalog;
+public class Catalog {
+    private static Catalog singleInstance = null;
+    private final Map<String, Product> catalogData;
 
     private Catalog() {
-        productCatalog = new HashMap<>();
+        catalogData = new HashMap<>();
     }
 
-    public static synchronized Catalog<?, ?> getInstance() {
+    private Catalog(Map<String, Product> initialData) {
+        catalogData = new HashMap<>(initialData);
+    }
+
+    public static synchronized Catalog getInstance() {
         if (singleInstance == null)
-            singleInstance = new Catalog<>();
+            singleInstance = new Catalog();
 
         return singleInstance;
     }
 
-    public Map<K, V> getProductCatalog() {
-        return this.productCatalog;
+    public static synchronized Catalog getInstance(Map<String, Product> initialData) {
+        if (singleInstance == null)
+            singleInstance = new Catalog(initialData);
+
+        return singleInstance;
     }
+
+    public Map<String, Product> getCatalog() {
+        return this.catalogData;
+    }
+
 }
