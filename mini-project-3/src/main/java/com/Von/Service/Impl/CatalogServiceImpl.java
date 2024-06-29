@@ -1,9 +1,7 @@
 package com.Von.Service.Impl;
 
 import com.Von.Model.Catalog.Product;
-import com.Von.Model.Enums.searchPreference;
-import com.Von.Model.Enums.builderPreference;
-import com.Von.Model.Enums.updatePreference;
+import com.Von.Model.Enums.customEnums;
 import com.Von.Service.CatalogService;
 import com.Von.Service.Utils.NumericInputValidator;
 
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 public class CatalogServiceImpl implements CatalogService {
     private static final Logger logger = LoggerFactory.getLogger(CatalogServiceImpl.class);
 
-    NumericInputValidator<Double> priceValidator = new NumericInputValidator<>(9_999_999.0);
+    NumericInputValidator<BigDecimal> priceValidator = new NumericInputValidator<>(new BigDecimal("9999999.0") );
 
     public CatalogServiceImpl() {}
 
@@ -34,7 +32,7 @@ public class CatalogServiceImpl implements CatalogService {
         return isSerialRegistered(serialNumberKey, records);
     }
 
-    public Product buildProduct(builderPreference builder, String name, Double price, String description, String seller) {
+    public Product buildProduct(customEnums.builderPreference builder, String name, BigDecimal price, String description, String seller) {
         Product.ProductBuilder productBuilder = new Product.ProductBuilder(name, price);
         switch (builder) {
             case withDescription:
@@ -58,7 +56,7 @@ public class CatalogServiceImpl implements CatalogService {
         return !isSerialRegistered(serialNumberKey, records);
     }
 
-    public void updateProduct(updatePreference preference, Product product) {
+    public void updateProduct(customEnums.updatePreference preference, Product product) {
         switch (preference) {
             case updateName -> product.
                     setProductName
@@ -75,7 +73,7 @@ public class CatalogServiceImpl implements CatalogService {
         }
     }
 
-    public List<Product> searchCatalog(searchPreference preference, String query, Map<String, Product> records) {
+    public List<Product> searchCatalog(customEnums.searchPreference preference, String query, Map<String, Product> records) {
         return switch (preference) {
             case byName -> records.
                     values().stream().

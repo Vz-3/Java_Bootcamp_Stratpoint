@@ -1,9 +1,7 @@
 package com.Von.Service;
 
-import com.Von.Model.Enums.updatePreference;
+import com.Von.Model.Enums.customEnums;
 import com.Von.Model.Catalog.Product;
-import com.Von.Model.Enums.builderPreference;
-import com.Von.Model.Enums.searchPreference;
 
 import java.math.BigDecimal;
 import java.util.List;
