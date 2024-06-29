@@ -1,12 +1,14 @@
 package com.Von.Model.Catalog;
 
+import java.math.BigDecimal;
+
 public class Product {
     private String productName;
-    private Double productPrice;
+    private BigDecimal productPrice;
     private String productDescription; //optional
     private String productSeller; //optional
 
-    private Float productCompoundedRatings = 3f; //optional
+    private BigDecimal productCompoundedRatings = BigDecimal.valueOf(3); //optional
 
     private Product(ProductBuilder builder) {
         this.productName = builder.productName;
@@ -17,12 +19,13 @@ public class Product {
 
     public static class ProductBuilder {
         private final String productName;
-        private final Double productPrice;
+        private final BigDecimal productPrice;
         private String productDescription; //optional
         private String productSeller; //optional
+        private BigDecimal productCompoundedRatings = BigDecimal.valueOf(3);
 
         // constructor for required fields.
-        public ProductBuilder(String _name, Double _price ) {
+        public ProductBuilder(String _name, BigDecimal _price ) {
             this.productName = _name;
             this.productPrice = _price;
         }
@@ -37,6 +40,11 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder rating(BigDecimal _rating) {
+            this.productCompoundedRatings = _rating;
+            return this;
+        }
+
         public Product build() {
             return new Product(this);
         }
@@ -48,7 +56,7 @@ public class Product {
         this.productName = productName;
     }
 
-    public void setProductPrice(Double productPrice) {
+    public void setProductPrice(BigDecimal productPrice) {
         this.productPrice = productPrice;
     }
 
@@ -60,11 +68,13 @@ public class Product {
         this.productSeller = productSeller;
     }
 
+    public void setProductCompoundedRatings(BigDecimal productRating) {this.productCompoundedRatings = productRating;}
+
     public String getProductName() {
         return productName;
     }
 
-    public Double getProductPrice() {
+    public BigDecimal getProductPrice() {
         return productPrice;
     }
 
@@ -76,7 +86,7 @@ public class Product {
         return productSeller;
     }
 
-    public Float getProductCompoundedRatings() {
+    public BigDecimal getProductCompoundedRatings() {
         return productCompoundedRatings;
     }
 

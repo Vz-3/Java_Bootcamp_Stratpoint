@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.Von.Service.Utils.Utils.validateStringInput;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -95,14 +96,14 @@ public class CatalogServiceImpl implements CatalogService {
 
     public void viewCatalog(Map<String, Product> records) {
         try {
+            System.out.println("=== Product ===");
             records.forEach((serialNo, product) -> System.out.printf("""
-                            === Product ===
                             SN: %s
                             Name: %s
                             Price: %.2f
                             Description: %s
                             Seller: %s
-                            ==== ------ ====
+                            ====+======+====
                             """, serialNo,
                     product.getProductName(),
                     product.getProductPrice(),
