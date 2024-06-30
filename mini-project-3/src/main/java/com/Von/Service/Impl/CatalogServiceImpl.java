@@ -23,15 +23,40 @@ public class CatalogServiceImpl implements CatalogService {
 
     public CatalogServiceImpl() {}
 
+    /**
+     * Checks whether a product with the specified serial number exists in the catalog.
+     *
+     * @param serialNo The serial number to check.
+     * @param records The map of serial numbers to corresponding products.
+     * @return <code>true</code> if the serial number is registered, otherwise <code>false</code>.
+     */
     public boolean isSerialRegistered(String serialNo, Map<String, Product> records) {
         return records.containsKey(serialNo);
     }
 
+    /**
+     * Adds a new product to the catalog.
+     *
+     * @param serialNumberKey The serial number key for the new product.
+     * @param newProduct The product to add.
+     * @param records The map of serial numbers to corresponding products.
+     * @return <code>true</code> if the product is successfully added, otherwise <code>false</code>.
+     */
     public boolean addProduct(String serialNumberKey, Product newProduct, Map<String, Product> records) {
         records.put(serialNumberKey, newProduct);
         return isSerialRegistered(serialNumberKey, records);
     }
 
+    /**
+     * Builds a new <code>Product</code> based on the specified details.
+     *
+     * @param builder The preference for building the product (minimal, with description, or with seller).
+     * @param name The product name.
+     * @param price The product price.
+     * @param description The product description (optional).
+     * @param seller The product seller (optional).
+     * @return The constructed <code>Product</code>.
+     */
     public Product buildProduct(customEnums.builderPreference builder, String name, BigDecimal price, String description, String seller) {
         Product.ProductBuilder productBuilder = new Product.ProductBuilder(name, price);
         switch (builder) {
@@ -49,6 +74,13 @@ public class CatalogServiceImpl implements CatalogService {
         return productBuilder.build();
     }
 
+    /**
+     * Removes a product from the catalog based on the provided serial number.
+     *
+     * @param serialNumberKey The serial number key of the product to remove.
+     * @param records The map of serial numbers to corresponding products.
+     * @return <code>true</code> if the product is successfully removed, otherwise <code>false</code>.
+     */
     public boolean removeProduct(String serialNumberKey, Map<String, Product> records) {
         records.remove(serialNumberKey);
 
@@ -56,6 +88,12 @@ public class CatalogServiceImpl implements CatalogService {
         return !isSerialRegistered(serialNumberKey, records);
     }
 
+    /**
+     * Updates specific details of a product based on the preference.
+     *
+     * @param preference The type of update (name, price, description, or seller).
+     * @param product The product to update.
+     */
     public void updateProduct(customEnums.updatePreference preference, Product product) {
         switch (preference) {
             case updateName -> product.
@@ -73,6 +111,14 @@ public class CatalogServiceImpl implements CatalogService {
         }
     }
 
+    /**
+     * Searches the catalog for products based on the specified preference and query.
+     *
+     * @param preference The search preference (by name, seller, or serial number).
+     * @param query The search query (e.g., product name, seller name, or serial number).
+     * @param records The map of serial numbers to corresponding products.
+     * @return A list of products matching the search criteria.
+     */
     public List<Product> searchCatalog(customEnums.searchPreference preference, String query, Map<String, Product> records) {
         return switch (preference) {
             case byName -> records.
@@ -92,6 +138,11 @@ public class CatalogServiceImpl implements CatalogService {
         };
     }
 
+    /**
+     * Displays detailed information about each product in the catalog.
+     *
+     * @param records The map of serial numbers to corresponding products.
+     */
     public void viewCatalog(Map<String, Product> records) {
         try {
             System.out.println("=== Product ===");
@@ -109,6 +160,27 @@ public class CatalogServiceImpl implements CatalogService {
                     product.getProductSeller()));
         } catch (Exception e) {
             logger.error("CatalogServiceImpl.viewCatalog error: ",e);
+        }
+    }
+
+    /**
+     * Displays a concise view of the catalog, showing only serial numbers, product names, and prices.
+     *
+     * @param records The map of serial numbers to corresponding products.
+     */
+    public void viewCatalogVerbose(Map<String, Product> records) {
+        try {
+            System.out.println("""
+                +--------------------+--------------------+----------+
+                |Serial Number       |Product Name        |Price(USD)|
+                +--------------------+--------------------+----------+
+                """);
+            records.forEach((serialNo, product) -> System.out.printf("""
+                |%-20s |%-20s | %7.2f|
+                """, serialNo, product.getProductName(), product.getProductPrice()));
+            System.out.println("+--------------------+--------------------+----------+");
+        } catch (Exception e) {
+            logger.error("CatalogServiceImpl.viewCatalogVerbose error: ", e);
         }
     }
 }

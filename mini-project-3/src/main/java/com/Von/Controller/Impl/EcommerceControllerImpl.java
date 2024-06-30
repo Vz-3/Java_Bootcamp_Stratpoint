@@ -1,9 +1,13 @@
 package com.Von.Controller.Impl;
 
+import com.Von.Controller.EcommerceController;
+import com.Von.Model.Cart.Cart;
 import com.Von.Model.Catalog.Catalog;
 import com.Von.Model.Catalog.Product;
 import com.Von.Model.Enums.customEnums;
+
 import com.Von.Service.Impl.CatalogServiceImpl;
+import com.Von.Service.Impl.CartServiceImpl;
 import com.Von.Service.Utils.NumericInputValidator;
 import com.Von.Service.Utils.Utils;
 import org.slf4j.Logger;
@@ -17,14 +21,17 @@ import java.util.Scanner;
 
 import static com.Von.Model.Enums.enumFactory.fromChoice;
 
-public class EcommerceControllerImpl {
+public class EcommerceControllerImpl implements EcommerceController {
     private static final Scanner scn = new Scanner(System.in);
-    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+    private static final Logger logger = LoggerFactory.getLogger(EcommerceControllerImpl.class);
     private static final String fileName = "src/main/resources/data.products.json";
     private final CatalogServiceImpl catalogService = new CatalogServiceImpl();
-    private NumericInputValidator<BigDecimal> priceValidator = new NumericInputValidator<>(new BigDecimal("9999999.0"));
+    private final CartServiceImpl cartService = new CartServiceImpl();
+    private final NumericInputValidator<BigDecimal> priceValidator = new NumericInputValidator<>(new BigDecimal("9999999.0"));
 
     Catalog catalog;
+    Cart userCart;
+    customEnums.Role appState = customEnums.Role.Admin;
 
     public EcommerceControllerImpl() {
         File data = new File(fileName);
@@ -39,22 +46,267 @@ public class EcommerceControllerImpl {
 
     }
 
-    public void start() {
+    /**
+     * Displays the administrative options menu and handles user choices
+     * related to managing the product catalog.
+     */
+    private void adminOptions() {
+        try {
+            Integer eCommerceOption = -1;
+
+            Boolean viewingOptions = true;
+            System.out.println("""
+                +======== E-buy Management ========+
+                | [1] View All products            |
+                | [2] View All product details     |
+                | [3] Register a product           |
+                | [4] Update a product             |
+                | [5] Remove a product             |
+                | [6] Search for a product         |
+                | [7] Test user                    |
+                | [exit] Quit application          |
+                +============= ------ =============+
+                """);
+
+            do {
+                System.out.println("Choice: ");
+                String userInput = scn.nextLine();
+                if (userInput.equalsIgnoreCase("exit"))
+                    viewingOptions = false;
+                else {
+                    if (userInput.matches("[1-7]")) {
+                        eCommerceOption = Integer.parseInt(userInput);
+                        viewingOptions = false;
+                    }
+                }
+            } while(viewingOptions);
+
+            switch (eCommerceOption) {
+                case 1 -> viewProducts();
+                case 2 -> readCatalog();
+                case 3 -> createProduct();
+                case 4 -> updateProduct();
+                case 5 -> deleteProduct();
+                case 6 -> searchProduct();
+                case 7 -> {
+                    if (catalog.getCatalog().isEmpty()) {
+                        System.out.println("Catalog is empty, can't test user & cart functionality!");
+                        adminOptions();
+                    }
+                    else {
+                        appState = customEnums.Role.User;
+                        userCart = new Cart();
+                        userOptions(); // Once called, can't go back to adminOptions until the application restarts.
+                    }
+                }
+                default -> {
+                    Utils.storeData(catalog.getCatalog());
+                    System.out.println("Closing app...");
+                    logger.info("Ecommerce.adminOption saving data!");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Ecommerce.adminOptions error: ",e);
+        }
 
     }
 
+    /**
+     * Displays the user options menu and handles user choices
+     * related to managing their shopping cart and viewing products.
+     */
+    private void userOptions() {
+        try {
+            Integer eCommerceOption = -1;
+
+            Boolean viewingOptions = true;
+            System.out.println("""
+                +============== E-buy ==============+
+                | [1] View All products             |
+                | [2] View All product details      |
+                | [3] Add item to cart              |
+                | [4] Update item quantity          |
+                | [5] View items in cart            |
+                | [6] Remove item in cart           |
+                | [7] Empty cart                    |
+                | [8] View cart total               |
+                | [exit] Quit application           |
+                +============== ----- ==============+
+                """);
+
+            do {
+                System.out.println("Choice: ");
+                String userInput = scn.nextLine();
+                if (userInput.equalsIgnoreCase("exit"))
+                    viewingOptions = false;
+                else {
+                    if (userInput.matches("[1-8]")) {
+                        eCommerceOption = Integer.parseInt(userInput);
+                        viewingOptions = false;
+                    }
+                }
+            } while(viewingOptions);
+
+            switch (eCommerceOption) {
+                case 1 -> viewProducts();
+                case 2 -> readCatalog();
+                case 3 -> addToCart();
+                case 4 -> updateItemAmount();
+                case 5 -> viewCart();
+                case 6 -> removeFromCart();
+                case 7 -> clearCart();
+                case 8 -> showCartTotal();
+                default -> {
+                    Utils.storeData(catalog.getCatalog());
+                    System.out.println("Closing app...");
+                    logger.info("Ecommerce.userOptions saving data!");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Ecommerce.userOptions error: ",e);
+        }
+
+    }
+
+    /**
+     * Initiates the Ecommerce application by displaying the main menu
+     * and handling user options for both administrators and regular users.
+     */
+    public void start(customEnums.Role appState) {
+        // Redirect interface to options for specific role.
+        if (appState == customEnums.Role.Admin)
+            adminOptions();
+        else
+            userOptions();
+    }
+
+    // User
+    public void addToCart() {
+        try {
+            // Makes sure that the serial number is not only valid but also not added to cart already!
+            String serialNumber = null;
+
+            if (!catalog.getCatalog().isEmpty() && userCart.getCart().isEmpty()) {
+                serialNumber = validateSN(); // No redundancy since cart is empty
+            }
+            else if (!catalog.getCatalog().isEmpty() && !userCart.getCart().isEmpty()) {
+                // Checking for product redundancy in cart
+                Boolean registeredButNotAdded = false;
+                do {
+                    serialNumber = Utils.validateStringInput("serial number");
+                    if (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
+                        System.err.printf("Serial number %s does not exist!%n", serialNumber);
+                    else if (cartService.itemInCartExists(serialNumber, userCart))
+                        System.err.printf("%s is already in the cart!", catalog.getCatalog().get(serialNumber).getProductName());
+                    else
+                        registeredButNotAdded = true; //Product should exist but not yet added to cart.
+                } while (!registeredButNotAdded);
+            }
+
+            Product productRef = catalog.getCatalog().get(serialNumber);
+            if (cartService.addCartItem(userCart, serialNumber, productRef))
+                logger.info(String.format("Ecommerce.addToCart successfully added %s to cart!", productRef.getProductName()));
+            else
+                logger.info(String.format("Ecommerce.addToCart failed to add %s to cart!", productRef.getProductName()));
+
+        } catch (Exception e) {
+            logger.error("Ecommerce.addToCart error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void removeFromCart() {
+        try {
+            if (userCart.getCart().isEmpty())
+                System.out.println("Empty cart, there's nothing to remove!");
+            else {
+                String snQuery = Utils.validateStringInput("serial number"); // Does not require the sn to be existing.
+                boolean result = cartService.removeCartItem(snQuery,userCart);
+                if (result)
+                    logger.info(String.format("Ecommerce.removeFromCart successfully removed %s - %s from cart!", snQuery, catalog.getCatalog().get(snQuery).getProductName()));
+                else
+                    logger.info(String.format("Ecommerce.removeFromCart failed to remove %s - %s from cart!", snQuery, catalog.getCatalog().get(snQuery).getProductName()));
+            }
+        } catch (Exception e) {
+            logger.error("Ecommerce.removeFromCart error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void clearCart() {
+        try {
+            if (userCart.getCart().isEmpty())
+                System.out.println("The cart is empty already!");
+            else {
+                Boolean result = cartService.removeAllItems(userCart);
+                if (result)
+                    logger.info("Ecommerce.clearCart successfully removed all cart items!");
+                else
+                    logger.info("Ecommerce.clearCart failed to remove all cart items!");
+            }
+        } catch (Exception e) {
+            logger.error("Ecommerce.clearCart error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void updateItemAmount() {
+        try {
+            // Makes sure that the serial number is valid and inside the cart!
+            String serialNumber = null;
+            if (userCart.getCart().isEmpty())
+                System.out.println("Cart is empty, no item to update!");
+            else {
+                    if (!catalog.getCatalog().isEmpty() && !userCart.getCart().isEmpty()) {
+                    // Checking if product exists
+                    do {
+                        serialNumber = Utils.validateStringInput("serial number");
+                        if (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
+                            System.out.printf("Can't find product with %s in the cart.%n", serialNumber);
+                    } while (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()));
+                }
+                cartService.updateQuantity(serialNumber, userCart);
+                logger.info("Ecommerce.updateItemAmount successfully updated product quantity");
+            }
+        } catch (Exception e) {
+            logger.error("Ecommerce.updateItemAmount error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void viewCart() {
+        try {
+            cartService.viewCartItems(userCart);
+        } catch (Exception e) {
+            logger.error("Ecommerce.viewCart error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void showCartTotal() {
+        try {
+            System.out.printf("""
+            +-----------------------------------------------------------+
+            |Total: $%.2f                                               |
+            +-----------------------------------------------------------+
+            """, cartService.getTotal(userCart));
+        } catch (Exception e) {
+            logger.error("Ecommerce.showCartTotal error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    // Admin
+
     public void createProduct() {
         try {
-            String serialNumber;
-            do {
-                serialNumber = Utils.validateStringInput("serial number");
-                if (catalog.getCatalog().isEmpty())
-                    break;
-
-                if (catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
-                    System.err.println("Serial number is already exists!");
-
-            } while(catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()));
+            String serialNumber = validateSN();
 
             customEnums.builderPreference preference = customEnums.builderPreference.minimum;// default is bare minimum.
             boolean isInvalidChoice = true;
@@ -73,7 +325,7 @@ public class EcommerceControllerImpl {
                 System.out.print("Choice: ");
                 choice = scn.nextLine();
                 if (choice.trim().equals("4")) {
-                    start();
+                    start(customEnums.Role.Admin);
                 }
 
                 if (choice.trim().matches("[0123]")) {
@@ -105,28 +357,33 @@ public class EcommerceControllerImpl {
 
         } catch (Exception e) {
             logger.error("Ecommerce.createProduct error: ",e);
+        } finally {
+            continueWithProgram();
         }
     }
 
-    public void readCatalog() {
-        try {
-            catalogService.viewCatalog(catalog.getCatalog());
-        } catch (Exception e) {
-            logger.error("Ecommerce.readCatalog error: ",e);
+    /**
+     * Validates user input for a serial number.
+     * Loops until a valid serial number exists (unless the catalog is empty).
+     *
+     * @return The valid serial number.
+     */
+    private String validateSN() {
+        String serialNumber = null;
+        // Loops until serial number exists unless if pseudo-database is empty.
+        if (!catalog.getCatalog().isEmpty()) {
+            do {
+                serialNumber = Utils.validateStringInput("serial number");
+                if (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
+                    System.err.printf("Serial number %s does not exist!%n", serialNumber);
+            } while (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()));
         }
+        return serialNumber;
     }
 
     public void updateProduct() {
         try {
-            String serialNumber = null;
-            // Loops until serial number exists unless if pseudo-database is empty.
-            if (!catalog.getCatalog().isEmpty()) {
-                do {
-                    serialNumber = Utils.validateStringInput("serial number");
-                    if (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
-                        System.err.printf("Serial number %s does not exist!%n", serialNumber);
-                } while (!catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()));
-            }
+            String serialNumber = validateSN();
 
             customEnums.updatePreference preference = customEnums.updatePreference.updatePrice;// default is price.
             boolean isInvalidChoice = true;
@@ -145,7 +402,7 @@ public class EcommerceControllerImpl {
                 System.out.print("Choice: ");
                 choice = scn.nextLine();
                 if (choice.trim().equals("4")) {
-                    start();
+                    start(customEnums.Role.Admin);
                 }
 
                 if (choice.trim().matches("[0123]")) {
@@ -158,6 +415,8 @@ public class EcommerceControllerImpl {
             logger.info(String.format("Ecommerce.updateProduct updated product sn[%s]", serialNumber));
         } catch (Exception e) {
             logger.error("Ecommerce.updateProduct error: ",e);
+        } finally {
+            continueWithProgram();
         }
     }
 
@@ -179,6 +438,8 @@ public class EcommerceControllerImpl {
                 logger.info(String.format("Ecommerce.deleteProduct failed to remove product sn[%s]", serialNumber));
         } catch (Exception e) {
             logger.error("Ecommerce.removeProduct error: ",e);
+        } finally {
+            continueWithProgram();
         }
     }
 
@@ -200,7 +461,7 @@ public class EcommerceControllerImpl {
                 System.out.print("Choice: ");
                 choice = scn.nextLine();
                 if (choice.trim().equals("3")) {
-                    start();
+                    start(customEnums.Role.Admin);
                 }
 
                 if (choice.trim().matches("[012]")) {
@@ -225,20 +486,43 @@ public class EcommerceControllerImpl {
             logger.info(String.format("Ecommerce.searchProduct performed search query: %s on preference: %s",query,preference.toString()));
         } catch (Exception e) {
             logger.error("Ecommerce.searchProduct error: ", e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    // Both roles
+    public void readCatalog() {
+        try {
+            catalogService.viewCatalog(catalog.getCatalog());
+        } catch (Exception e) {
+            logger.error("Ecommerce.readCatalog error: ",e);
+        } finally {
+            continueWithProgram();
+        }
+    }
+
+    public void viewProducts() {
+        try {
+            catalogService.viewCatalogVerbose(catalog.getCatalog());
+        } catch (Exception e) {
+            logger.error("Ecommerce.viewCatalogVerbose error: ",e);
+        } finally {
+            continueWithProgram();
         }
     }
 
     /**
      * A function that prompts to continue running the program,
      * accepts <code>y</code> or <code>n</code> to return back to
-     * the {@link #start()} or exit the program.
+     * the {@link #start(customEnums.Role)} or exit the program.
      */
     private void continueWithProgram() {
         String input;
         do {
             try {
                 System.out.println("""
-                \
+                
                 +=============================+\
                 | Continue using the program? |\
                 +=============================+\
@@ -250,7 +534,7 @@ public class EcommerceControllerImpl {
             }
         } while (!input.matches("[yn]"));
         if (input.equals("y"))
-            start();
+            start(appState);
         else {
             if (!catalog.getCatalog().isEmpty()) {
                 logger.info(Utils.storeData(catalog.getCatalog()) ? "Successfully stored data." : "Failed to store data.");
