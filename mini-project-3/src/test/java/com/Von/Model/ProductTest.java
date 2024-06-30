@@ -4,13 +4,15 @@ import com.Von.Model.Catalog.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
     private Product productComplete;
     private Product productBareMinimum;
     private final String initName = "Iphone X";
-    private final Double initPrice = 499.0;
+    private final BigDecimal initPrice = BigDecimal.valueOf(499.0);
     private final String initDescription = "is a smartphone designed, developed, and marketed by Apple...";
     private final String initSeller = "Apple";
 
