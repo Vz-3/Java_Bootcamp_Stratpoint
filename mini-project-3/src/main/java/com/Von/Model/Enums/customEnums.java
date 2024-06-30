@@ -3,6 +3,11 @@ package com.Von.Model.Enums;
 public class customEnums {
     private customEnums() {}
 
+    public enum Role {
+        Admin,
+        User;
+    }
+
     public enum updatePreference {
         updateName,
         updatePrice,
