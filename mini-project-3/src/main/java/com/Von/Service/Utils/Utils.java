@@ -27,6 +27,14 @@ public class Utils {
     private static final String fileName = "src/main/resources/data.products.json";
     private Utils() {}
 
+    /**
+     * Validates user input for a specified field.
+     *
+     * @param fieldName The name of the field being validated.
+     * @param minLength The minimum allowed length of the input.
+     * @param maxLength The maximum allowed length of the input.
+     * @return The valid input string.
+     */
     private static String validator(String fieldName, Integer minLength, Integer maxLength) {
         String validString;
         Boolean firstTime = true;
@@ -77,6 +85,11 @@ public class Utils {
         return validator(fieldName, minLength, maxLength);
     }
 
+    /**
+     * Imports product data from a JSON file and populates a catalog map.
+     *
+     * @return A map of serial numbers to corresponding products.
+     */
     public static Map<String, Product> importData() {
         Map<String, Product> existingCatalog = new HashMap<>();
 
@@ -105,27 +118,34 @@ public class Utils {
         return existingCatalog;
     }
 
-
+    /**
+     * Stores the catalog data (products) in a JSON file.
+     *
+     * @param catalog The map of serial numbers to corresponding products.
+     * @return <code>true</code> if the data is successfully stored, otherwise <code>false</code>.
+     */
     public static boolean storeData(Map<String, Product> catalog) {
         try (FileWriter writer = new FileWriter(fileName)) {
             StringBuilder json = new StringBuilder("[\n");
-            catalog.forEach((key, product) -> json.append(String.format("""
-            {
-                "sn": "%s",
-                "product_name": "%s",
-                "product_price": "%s",
-                "product_seller": "%s",
-                "product_description": "%s",
-                "product_rating": "%s"
-            },
-        """,
-                    key,
-                    product.getProductName(),
-                    product.getProductPrice(),
-                    product.getProductSeller() == null ? "" : product.getProductSeller(),
-                    product.getProductDescription() == null ? "" : product.getProductDescription(),
-                    product.getProductCompoundedRatings())));
-            json.deleteCharAt(json.length() - 2); // Remove the trailing comma and newline
+            if (!catalog.isEmpty()) {
+                catalog.forEach((key, product) -> json.append(String.format("""
+                {
+                    "sn": "%s",
+                    "product_name": "%s",
+                    "product_price": "%s",
+                    "product_seller": "%s",
+                    "product_description": "%s",
+                    "product_rating": "%s"
+                },
+            """,
+                        key,
+                        product.getProductName(),
+                        product.getProductPrice(),
+                        product.getProductSeller() == null ? "" : product.getProductSeller(),
+                        product.getProductDescription() == null ? "" : product.getProductDescription(),
+                        product.getProductCompoundedRatings())));
+                json.deleteCharAt(json.length() - 2); // Remove the trailing comma and newline
+            }
             json.append("]");
 
             writer.write(json.toString());
