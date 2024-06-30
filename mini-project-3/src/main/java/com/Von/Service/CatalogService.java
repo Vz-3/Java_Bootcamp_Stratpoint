@@ -15,5 +15,5 @@ public interface CatalogService {
     boolean removeProduct(String serialNumberKey, Map<String, Product> records);
     void updateProduct(customEnums.updatePreference preference, Product product);
     List<Product> searchCatalog(customEnums.searchPreference preference, String query, Map<String, Product> records);
-    void viewCatalog(Map<String, Product> records);
+    void viewCatalogVerbose(Map<String, Product> records);
 }

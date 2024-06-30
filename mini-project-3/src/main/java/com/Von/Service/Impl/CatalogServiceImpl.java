@@ -143,7 +143,7 @@ public class CatalogServiceImpl implements CatalogService {
      *
      * @param records The map of serial numbers to corresponding products.
      */
-    public void viewCatalog(Map<String, Product> records) {
+    public void viewCatalogVerbose(Map<String, Product> records) {
         try {
             System.out.println("=== Product ===");
             records.forEach((serialNo, product) -> System.out.printf("""
@@ -168,7 +168,7 @@ public class CatalogServiceImpl implements CatalogService {
      *
      * @param records The map of serial numbers to corresponding products.
      */
-    public void viewCatalogVerbose(Map<String, Product> records) {
+    public void viewCatalogBriefly(Map<String, Product> records) {
         try {
             System.out.println("""
                 +--------------------+--------------------+----------+

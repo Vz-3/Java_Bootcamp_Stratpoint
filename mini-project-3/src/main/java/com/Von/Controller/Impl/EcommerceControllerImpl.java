@@ -494,7 +494,7 @@ public class EcommerceControllerImpl implements EcommerceController {
     // Both roles
     public void readCatalog() {
         try {
-            catalogService.viewCatalog(catalog.getCatalog());
+            catalogService.viewCatalogVerbose(catalog.getCatalog());
         } catch (Exception e) {
             logger.error("Ecommerce.readCatalog error: ",e);
         } finally {
@@ -504,7 +504,7 @@ public class EcommerceControllerImpl implements EcommerceController {
 
     public void viewProducts() {
         try {
-            catalogService.viewCatalogVerbose(catalog.getCatalog());
+            catalogService.viewCatalogBriefly(catalog.getCatalog());
         } catch (Exception e) {
             logger.error("Ecommerce.viewCatalogVerbose error: ",e);
         } finally {
