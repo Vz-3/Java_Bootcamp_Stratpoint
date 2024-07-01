@@ -100,9 +100,7 @@ public class EcommerceControllerImpl implements EcommerceController {
                     }
                 }
                 default -> {
-                    Utils.storeData(catalog.getCatalog());
-                    System.out.println("Closing app...");
-                    logger.info("Ecommerce.adminOption saving data!");
+                    end();
                 }
             }
         } catch (Exception e) {
@@ -157,9 +155,7 @@ public class EcommerceControllerImpl implements EcommerceController {
                 case 7 -> clearCart();
                 case 8 -> showCartTotal();
                 default -> {
-                    Utils.storeData(catalog.getCatalog());
-                    System.out.println("Closing app...");
-                    logger.info("Ecommerce.userOptions saving data!");
+                    end();
                 }
             }
         } catch (Exception e) {
@@ -180,6 +176,11 @@ public class EcommerceControllerImpl implements EcommerceController {
             userOptions();
     }
 
+    private void end() {
+        Utils.storeData(catalog.getCatalog());
+        System.out.println("Closing app...");
+        logger.info("Ecommerce saving data!");
+    }
     // User
     public void addToCart() {
         try {
@@ -292,9 +293,9 @@ public class EcommerceControllerImpl implements EcommerceController {
         try {
             System.out.printf("""
             +-----------------------------------------------------------+
-            |Total: $%.2f                                               |
+            |Total: %1c%50.2f |
             +-----------------------------------------------------------+
-            """, cartService.getTotal(userCart));
+            """, '$',cartService.getTotal(userCart));
         } catch (Exception e) {
             logger.error("Ecommerce.showCartTotal error: ",e);
         } finally {
@@ -306,7 +307,16 @@ public class EcommerceControllerImpl implements EcommerceController {
 
     public void createProduct() {
         try {
-            String serialNumber = validateSN();
+            String serialNumber = null;
+            do {
+                serialNumber = Utils.validateStringInput("serial number");
+                if (catalog.getCatalog().isEmpty())
+                    break;
+
+                if (catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()))
+                    System.err.println("Serial number is already exists!");
+
+            } while(catalogService.isSerialRegistered(serialNumber, catalog.getCatalog()));
 
             customEnums.builderPreference preference = customEnums.builderPreference.minimum;// default is bare minimum.
             boolean isInvalidChoice = true;
@@ -393,8 +403,8 @@ public class EcommerceControllerImpl implements EcommerceController {
                     +=== Select Field ===+
                     |0 - Name            |
                     |1 - Price           |
-                    |2 - Seller          |
-                    |3 - Description     |
+                    |2 - Description     |
+                    |3 - Seller          |
                     |4 - Return to menu  |
                     +=== ------------ ===+
                     """);
@@ -522,10 +532,10 @@ public class EcommerceControllerImpl implements EcommerceController {
         do {
             try {
                 System.out.println("""
-                
-                +=============================+\
-                | Continue using the program? |\
-                +=============================+\
+                \n
+                +=============================+
+                | Continue using the program? |
+                +=============================+
                 (y/n):""");
                 input = scn.nextLine().toLowerCase();
             } catch (InputMismatchException e) {

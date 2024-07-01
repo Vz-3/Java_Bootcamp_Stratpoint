@@ -1,0 +1,26 @@
+[
+    {
+        "sn": "4672aB",
+        "product_name": "Dell Laptop",
+        "product_price": "1000",
+        "product_seller": "Dell",
+        "product_description": "144 hz, integrated graphics",
+        "product_rating": "3"
+    },
+    {
+        "sn": "12314",
+        "product_name": "Iphone X",
+        "product_price": "90",
+        "product_seller": "",
+        "product_description": "",
+        "product_rating": "3"
+    },
+    {
+        "sn": "12.5",
+        "product_name": "abc123",
+        "product_price": "1",
+        "product_seller": "",
+        "product_description": "",
+        "product_rating": "3"
+    }
+]

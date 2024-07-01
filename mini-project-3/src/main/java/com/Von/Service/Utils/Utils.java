@@ -35,15 +35,14 @@ public class Utils {
      * @param maxLength The maximum allowed length of the input.
      * @return The valid input string.
      */
-    private static String validator(String fieldName, Integer minLength, Integer maxLength) {
+    private static String validator(String fieldName, int minLength, int maxLength) {
         String validString;
-        Boolean firstTime = true;
-        final Pattern invalidChars = Pattern.compile("[^a-zA-z0-9.,()&\\s]");
+        boolean firstTime = true;
+        final Pattern invalidChars = Pattern.compile("[^a-zA-Z0-9&.,()\\s-]"); // Updated regex
 
         System.out.printf("%s:", fieldName);
         do {
             try {
-
                 validString = scn.nextLine();
                 Matcher matcher = invalidChars.matcher(validString);
 
@@ -60,14 +59,14 @@ public class Utils {
                                 \t Invalid character/symbol
                                 Please try again:""", minLength, maxLength);
                         firstTime = false;
+                    } else {
+                        System.out.printf("%s:", fieldName);
                     }
-                    else
-                        System.out.print("Title:");
-                }
-                else
+                } else {
                     return validString;
+                }
             } catch (NoSuchElementException e) {
-                logger.error("Utils.validator error: ",e);
+                System.err.println("Error reading input. Please try again.");
                 validString = ""; // Reset the input.
             }
         } while (true);

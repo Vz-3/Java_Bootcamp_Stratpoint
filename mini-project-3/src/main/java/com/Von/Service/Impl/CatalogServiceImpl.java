@@ -144,9 +144,13 @@ public class CatalogServiceImpl implements CatalogService {
      * @param records The map of serial numbers to corresponding products.
      */
     public void viewCatalogVerbose(Map<String, Product> records) {
-        try {
-            System.out.println("=== Product ===");
-            records.forEach((serialNo, product) -> System.out.printf("""
+        if (records.isEmpty()) {
+            System.out.println("Empty catalog!");
+        }
+        else {
+            try {
+                System.out.println("=== Product ===");
+                records.forEach((serialNo, product) -> System.out.printf("""
                             SN: %s
                             Name: %s
                             Price: %.2f
@@ -154,12 +158,13 @@ public class CatalogServiceImpl implements CatalogService {
                             Seller: %s
                             ====+======+====
                             """, serialNo,
-                    product.getProductName(),
-                    product.getProductPrice(),
-                    product.getProductDescription(),
-                    product.getProductSeller()));
-        } catch (Exception e) {
-            logger.error("CatalogServiceImpl.viewCatalog error: ",e);
+                        product.getProductName(),
+                        product.getProductPrice(),
+                        product.getProductDescription(),
+                        product.getProductSeller()));
+            } catch (Exception e) {
+                logger.error("CatalogServiceImpl.viewCatalog error: ",e);
+            }
         }
     }
 
@@ -169,18 +174,20 @@ public class CatalogServiceImpl implements CatalogService {
      * @param records The map of serial numbers to corresponding products.
      */
     public void viewCatalogBriefly(Map<String, Product> records) {
-        try {
-            System.out.println("""
+        if (records.isEmpty()) {
+            System.out.println("Empty catalog!");
+        }
+        else {
+            try {
+                System.out.println("""
                 +--------------------+--------------------+----------+
                 |Serial Number       |Product Name        |Price(USD)|
-                +--------------------+--------------------+----------+
-                """);
-            records.forEach((serialNo, product) -> System.out.printf("""
-                |%-20s |%-20s | %7.2f|
-                """, serialNo, product.getProductName(), product.getProductPrice()));
-            System.out.println("+--------------------+--------------------+----------+");
-        } catch (Exception e) {
-            logger.error("CatalogServiceImpl.viewCatalogVerbose error: ", e);
+                +--------------------+--------------------+----------+""");
+                records.forEach((serialNo, product) -> System.out.printf("|%-19s |%-19s | %9.2f| %n", serialNo, product.getProductName(), product.getProductPrice()));
+                System.out.println("+--------------------+--------------------+----------+");
+            } catch (Exception e) {
+                logger.error("CatalogServiceImpl.viewCatalogVerbose error: ", e);
+            }
         }
     }
 }

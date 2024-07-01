@@ -96,16 +96,15 @@ public class CartServiceImpl implements CartService {
             System.out.println("""
                 +--------------------+--------------------+----------+------+
                 |Serial Number       |Product Name        |Price(USD)|   Qty|
-                +--------------------+--------------------+----------+------+
-                """);
+                +--------------------+--------------------+----------+------+""");
             userCart.getCart().forEach(cartItem -> System.out.printf("""
-                |%-20s |%-20s | %7.2f| %4d|
+                |%-19s |%-19s | %9.2f| %4d|
                 """, cartItem.getSN(), cartItem.getName(), cartItem.getPrice(), cartItem.getQuantity()));
             System.out.println("+--------------------+--------------------+----------+------+");
             System.out.printf("""
-            |Total: $%.2f                                               |
+            |Total: %1c%50.2f |
             +-----------------------------------------------------------+
-            """, getTotal(userCart));
+            """, '$',getTotal(userCart));
         } catch (Exception e) {
             logger.error("CartServiceImpl.viewCartItems error: ", e);
         }
